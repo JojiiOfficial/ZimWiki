@@ -1,0 +1,4 @@
+github.com/tim-st/go-zim v0.0.1 h1:jDqHZOzggncCXg9Lfx33LHbk3SO3jlitfdPWCcqAsRA=
+github.com/tim-st/go-zim v0.0.1/go.mod h1:ac2eYM1a06s/lJofEdg/6uheVCiTFlRHOo7e+NvuUFQ=
+github.com/xi2/xz v0.0.0-20171230120015-48954b6210f8 h1:nIPpBwaJSVYIxUFsDv3M8ofmx9yWTog9BfvIu0q41lo=
+github.com/xi2/xz v0.0.0-20171230120015-48954b6210f8/go.mod h1:HUYIGzjTL3rfEspMxjDjgmT5uz5wzYJKVo23qUhYTos=
