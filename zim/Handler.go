@@ -1,4 +1,4 @@
-package services
+package zim
 
 import (
 	"os"
@@ -9,21 +9,25 @@ import (
 	"github.com/tim-st/go-zim"
 )
 
-// ZimService manage zim files
-type ZimService struct {
+// Handler manage zim files
+type Handler struct {
 	Dir   string
-	files []ZimFile
+	files []File
+
+	// Cache for faster file search
+	fileCache map[string]*File
 }
 
-// NewZimService create a new zimservice
-func NewZimService(dir string) *ZimService {
-	return &ZimService{
-		Dir: dir,
+// NewZim create a new zimservice
+func NewZim(dir string) *Handler {
+	return &Handler{
+		Dir:       dir,
+		fileCache: make(map[string]*File),
 	}
 }
 
 // Start starts the zimservice
-func (zs *ZimService) Start() error {
+func (zs *Handler) Start() error {
 	// Load all zimfiles in given directorys
 	if err := zs.loadFiles(); err != nil {
 		return err
@@ -35,12 +39,12 @@ func (zs *ZimService) Start() error {
 }
 
 // GetFiles in dir
-func (zs ZimService) GetFiles() []ZimFile {
+func (zs Handler) GetFiles() []File {
 	return zs.files
 }
 
 // Load all files in given Dir
-func (zs *ZimService) loadFiles() error {
+func (zs *Handler) loadFiles() error {
 	err := filepath.Walk(zs.Dir, func(path string, info os.FileInfo, err error) error {
 		// Ignore non regular files
 		if !info.IsDir() {
@@ -66,7 +70,7 @@ func (zs *ZimService) loadFiles() error {
 				return nil
 			}
 
-			zs.files = append(zs.files, ZimFile{
+			zs.files = append(zs.files, File{
 				File: f,
 				Path: path,
 			})
@@ -77,6 +81,25 @@ func (zs *ZimService) loadFiles() error {
 
 	if err != nil {
 		return err
+	}
+
+	return nil
+}
+
+// FindWikiFile by ID. File gets cached into a map
+func (zs *Handler) FindWikiFile(zimFileID string) *File {
+	if fil, has := zs.fileCache[zimFileID]; has {
+		return fil
+	}
+
+	// Loop all files and find matching
+	for i := range zs.files {
+		file := &zs.files[i]
+
+		if file.GetID() == zimFileID {
+			zs.fileCache[file.GetID()] = file
+			return file
+		}
 	}
 
 	return nil

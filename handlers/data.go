@@ -1,8 +1,8 @@
 package handlers
 
-import "git.jojii.de/jojii/zimserver/services"
+import "git.jojii.de/jojii/zimserver/zim"
 
 // HandlerData data for handler funcs
 type HandlerData struct {
-	ZimService *services.ZimService
+	ZimService *zim.Handler
 }

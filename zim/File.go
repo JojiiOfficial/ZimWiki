@@ -1,16 +1,16 @@
-package services
+package zim
 
 import "github.com/tim-st/go-zim"
 
-// ZimFile represents a zimfile
+// File represents a zimfile
 // and a local assigned path
-type ZimFile struct {
+type File struct {
 	*zim.File
 	Path string
 }
 
-// ZimFileInfo for zim archive
-type ZimFileInfo struct {
+// FileInfo for zim archive
+type FileInfo struct {
 	Name            string
 	Title           string
 	ArticleCount    uint32
@@ -23,7 +23,7 @@ type ZimFileInfo struct {
 
 // GetDescription tries to return the long
 // Description
-func (zfi ZimFileInfo) GetDescription() string {
+func (zfi FileInfo) GetDescription() string {
 	// Prefer long description
 	if len(zfi.LongDescription) > 0 {
 		return zfi.LongDescription
@@ -38,8 +38,8 @@ func (zfi ZimFileInfo) GetDescription() string {
 }
 
 // GetInfos for zim archive
-func (zf *ZimFile) GetInfos() *ZimFileInfo {
-	return &ZimFileInfo{
+func (zf *File) GetInfos() *FileInfo {
+	return &FileInfo{
 		Name:            zf.Name(),
 		Title:           zf.Title(),
 		ArticleCount:    zf.ArticleCount(),
@@ -49,4 +49,9 @@ func (zf *ZimFile) GetInfos() *ZimFileInfo {
 		FileSize:        zf.Filesize(),
 		Language:        zf.Language(),
 	}
+}
+
+// GetID for zimfiles
+func (zf *File) GetID() string {
+	return zf.UUID().String()
 }

@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"git.jojii.de/jojii/zimserver/handlers"
-	"git.jojii.de/jojii/zimserver/services"
+	"git.jojii.de/jojii/zimserver/zim"
 	"github.com/gorilla/mux"
 	log "github.com/sirupsen/logrus"
 )
@@ -39,6 +39,7 @@ type RouteFunction func(http.ResponseWriter, *http.Request, *handlers.HandlerDat
 var (
 	routes = Routes{
 		// -- Index routes
+		// Main/Home pages and aliases
 		{
 			Name:        "IndexRoot",
 			Pattern:     "/",
@@ -53,17 +54,27 @@ var (
 		},
 
 		// -- Assets
+		// Requests for static files
 		{
 			Name:        "",
 			Pattern:     "/assets/{type}/{file}",
 			Method:      GetMethod,
 			HandlerFunc: handlers.Assets,
 		},
+
+		// -- Wiki Raw
+		// Raw wiki page
+		{
+			Name:        "WikiRaw",
+			Pattern:     "/wiki/raw/{wikiID}/{namespace}/{file}",
+			Method:      GetMethod,
+			HandlerFunc: handlers.WikiRaw,
+		},
 	}
 )
 
 // NewRouter create new router and its required components
-func NewRouter(zimService *services.ZimService) *mux.Router {
+func NewRouter(zimService *zim.Handler) *mux.Router {
 	hd := handlers.HandlerData{
 		ZimService: zimService,
 	}
