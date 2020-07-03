@@ -1,89 +1,125 @@
 package handlers
 
 import (
-	"fmt"
 	"io"
 	"net/http"
+	"net/url"
 	"strings"
 
 	"git.jojii.de/jojii/zimserver/zim"
-	"github.com/gorilla/mux"
-	log "github.com/sirupsen/logrus"
 	gzim "github.com/tim-st/go-zim"
 )
 
-// Find a given wiki page
-func findWikiPage(vars map[string]string, w http.ResponseWriter, r *http.Request, hd *HandlerData) (*gzim.Namespace, *zim.File, *gzim.DirectoryEntry, error) {
-	if !checkVars(vars, "wikiID", "namespace", "file") {
-		return nil, nil, nil, fmt.Errorf("Missing parameter")
+// WikiRaw handle direct wiki requests, without embedding into the webUI
+func WikiRaw(w http.ResponseWriter, r *http.Request, hd *HandlerData) error {
+	// Split requested path by /
+	sPath := strings.Split(parseURLPath(r.URL), "/")
+
+	var reqWikiID string
+	var z *zim.File
+
+	// We can use zim.File for getting
+	// The desired wiki and mainpage
+	if len(sPath) > 2 {
+		// WikiID represents the zim UUID
+		reqWikiID = sPath[2]
+
+		hd.ZimService.Mx.Lock()
+		// Find requested wiki file by given ID
+		z = hd.ZimService.FindWikiFile(reqWikiID)
+		hd.ZimService.Mx.Unlock()
+		if z == nil {
+			return nil
+		}
+	}
+
+	// Something in the request is missing
+	if len(sPath) < 5 {
+		newLoc := "/"
+
+		// Try to use main page if
+		// the page is the only
+		// thing missing
+		if len(sPath) == 4 {
+			if mainpage := zim.GetMainpageURLRaw(z); len(mainpage) > 0 {
+				newLoc = mainpage
+			}
+		}
+
+		// Something is missing in the given URL
+		w.Header().Set("Location", newLoc)
+		w.WriteHeader(http.StatusMovedPermanently)
+		return nil
 	}
 
 	// Throw error for invalid namespaces
-	reqNamespace := vars["namespace"]
+	reqNamespace := sPath[3]
 	if !strings.ContainsAny(reqNamespace, "ABIJMUVWX-") || len(reqNamespace) > 1 {
 		http.NotFound(w, r)
-		return nil, nil, nil, ErrNamespaceNotFound
+		return nil
 	}
 
 	// Parse namespace
 	namespace := gzim.Namespace(reqNamespace[0])
 
-	// reqFileURL is the url of the
-	// requested file inside a wiki
-	reqFileURL := vars["file"]
-
-	// WikiID represents the zim UUID
-	reqWikiID := vars["wikiID"]
-
-	// Find requested wiki file by given ID
-	z := hd.ZimService.FindWikiFile(reqWikiID)
-	if z == nil {
-		return nil, nil, nil, ErrNotFound
+	switch namespace {
+	case gzim.NamespaceLayout, gzim.NamespaceArticles, gzim.NamespaceImagesFiles, gzim.NamespaceImagesText:
+	default:
+		http.NotFound(w, r)
+		return nil
 	}
 
+	// reqFileURL is the url of the
+	// requested file inside a wiki
+	reqFileURL := strings.Join(sPath[4:], "/")
+
+	z.Mx.Lock()
 	entry, _, found := z.EntryWithURL(namespace, []byte(reqFileURL))
+	z.Mx.Unlock()
 	if !found {
 		http.NotFound(w, r)
-		return nil, nil, nil, ErrNotFound
+		return nil
 	}
 
 	// Follow redirect
 	if entry.IsRedirect() {
+		z.Mx.Lock()
 		entry, _ = z.FollowRedirect(&entry)
+		z.Mx.Unlock()
+		http.Redirect(w, r, zim.GetRawWikiURL(z, entry), http.StatusNotFound)
+		return nil
 	}
 
-	return &namespace, z, &entry, nil
-}
-
-// WikiRaw handle direct wiki requests, without embedding into the webUI
-func WikiRaw(w http.ResponseWriter, r *http.Request, hd *HandlerData) error {
-	vars := mux.Vars(r)
-
-	_, z, entry, err := findWikiPage(vars, w, r, hd)
+	z.Mx.Lock()
+	defer z.Mx.Unlock()
+	blobReader, _, err := z.BlobReader(&entry)
 	if err != nil {
 		return err
 	}
 
-	var blobReader, _, blobReaderErr = z.BlobReader(entry)
-	if blobReaderErr != nil {
-		log.Printf("Entry found but loading blob data failed for URL: %s with error %s\n", r.URL.Path, blobReaderErr)
-		http.Error(w, blobReaderErr.Error(), http.StatusFailedDependency)
-		return nil
-	}
-
-	// If file was found, set Mimetype accordingly
+	// Set Mimetype accordingly
 	if mimetypeList := z.MimetypeList(); int(entry.Mimetype()) < len(mimetypeList) {
 		w.Header().Set("Content-Type", mimetypeList[entry.Mimetype()])
 	}
 
 	// Copy response
-	buff := make([]byte, 1024*1024)
-	_, err = io.CopyBuffer(w, blobReader, buff)
+	_, err = io.Copy(w, blobReader)
 	return err
 }
 
 // WikiPreview sends a human friendly preview page for a WIKI site
 func WikiPreview(w http.ResponseWriter, r *http.Request, hd *HandlerData) error {
-
 	return nil
+}
+
+func parseURLPath(u *url.URL) string {
+	path := u.Path
+	if strings.HasSuffix(path, "/") {
+		path = path[:len(path)-1]
+	}
+	if strings.HasPrefix(path, "/") {
+		path = path[1:]
+	}
+
+	return path
 }

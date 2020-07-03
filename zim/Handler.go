@@ -4,6 +4,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"sync"
 
 	log "github.com/sirupsen/logrus"
 	"github.com/tim-st/go-zim"
@@ -16,6 +17,8 @@ type Handler struct {
 
 	// Cache for faster file search
 	fileCache map[string]*File
+
+	Mx sync.Mutex
 }
 
 // NewZim create a new zimservice
@@ -39,7 +42,7 @@ func (zs *Handler) Start() error {
 }
 
 // GetFiles in dir
-func (zs Handler) GetFiles() []File {
+func (zs *Handler) GetFiles() []File {
 	return zs.files
 }
 

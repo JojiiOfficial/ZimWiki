@@ -1,12 +1,21 @@
 package zim
 
-import "github.com/tim-st/go-zim"
+import (
+	"sync"
+
+	"github.com/tim-st/go-zim"
+)
 
 // File represents a zimfile
 // and a local assigned path
 type File struct {
 	*zim.File
 	Path string
+
+	// Use Mutex cause we can only
+	// have one routine reading
+	// at the same time
+	Mx sync.RWMutex
 }
 
 // FileInfo for zim archive

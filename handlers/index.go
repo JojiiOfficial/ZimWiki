@@ -11,7 +11,9 @@ func Index(w http.ResponseWriter, r *http.Request, hd *HandlerData) error {
 	var cards []HomeCards
 
 	// Create cards
-	for _, file := range hd.ZimService.GetFiles() {
+	for i := range hd.ZimService.GetFiles() {
+		file := &hd.ZimService.GetFiles()[i]
+
 		info := file.GetInfos()
 
 		// Get Faviconlink
@@ -25,7 +27,7 @@ func Index(w http.ResponseWriter, r *http.Request, hd *HandlerData) error {
 			Text:  info.GetDescription(),
 			Title: info.Title,
 			Image: favurl,
-			Link:  zim.GetMainpageURL(file),
+			Link:  zim.GetMainpageURLRaw(file),
 		})
 	}
 

@@ -82,9 +82,6 @@ func awaitExit(httpServer *http.Server) {
 }
 
 func setupLogger() {
-	// Set debug level
-	log.SetLevel(log.DebugLevel)
-
 	log.SetOutput(os.Stdout)
 	log.SetFormatter(&log.TextFormatter{
 		DisableTimestamp: false,

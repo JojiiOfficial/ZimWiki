@@ -1,6 +1,7 @@
 package main
 
 import (
+	"net"
 	"net/http"
 	"time"
 
@@ -37,7 +38,7 @@ type RouteFunction func(http.ResponseWriter, *http.Request, *handlers.HandlerDat
 
 // Routes
 var (
-	routes = Routes{
+	globalRoutes = Routes{
 		// -- Index routes
 		// Main/Home pages and aliases
 		{
@@ -63,13 +64,7 @@ var (
 		},
 
 		// -- Wiki Raw
-		// Raw wiki page
-		{
-			Name:        "WikiRaw",
-			Pattern:     "/wiki/raw/{wikiID}/{namespace}/{file}",
-			Method:      GetMethod,
-			HandlerFunc: handlers.WikiRaw,
-		},
+
 		// Human friendly wiki page
 		{
 			Name:        "WikiPreview",
@@ -80,6 +75,16 @@ var (
 	}
 )
 
+// WikiRoutes
+var (
+	// Raw wiki page
+	wikiRaw = Route{
+		Name:        "",
+		Method:      GetMethod,
+		HandlerFunc: handlers.WikiRaw,
+	}
+)
+
 // NewRouter create new router and its required components
 func NewRouter(zimService *zim.Handler) *mux.Router {
 	hd := handlers.HandlerData{
@@ -87,13 +92,19 @@ func NewRouter(zimService *zim.Handler) *mux.Router {
 	}
 
 	router := mux.NewRouter().StrictSlash(true)
-	for _, route := range routes {
+	for _, route := range globalRoutes {
 		router.
 			Methods(string(route.Method)).
 			Path(route.Pattern).
 			Name(route.Name).
 			Handler(RouteHandler(route.HandlerFunc, route.Name, &hd))
 	}
+
+	// Add raw handler
+	router.Methods(string(wikiRaw.Method)).
+		PathPrefix("/wiki/raw/").
+		Name(wikiRaw.Name).
+		Handler(RouteHandler(wikiRaw.HandlerFunc, wikiRaw.Name, &hd))
 
 	return router
 }
@@ -117,6 +128,11 @@ func RouteHandler(inner RouteFunction, name string, hd *handlers.HandlerData) ht
 
 		// Process request and handle its error
 		if err := inner(w, r, hd); err != nil {
+			if _, ok := err.(*net.OpError); ok {
+				// Ignore network errors
+				return
+			}
+
 			if err != handlers.ErrNotFound {
 				sendServerError(w)
 			}
