@@ -37,12 +37,20 @@ type RouteFunction func(http.ResponseWriter, *http.Request) error
 // Routes
 var (
 	routes = Routes{
+		// Index routes
 		{
 			Name:        "IndexRoot",
 			Pattern:     "/",
 			Method:      GetMethod,
 			HandlerFunc: handlers.Index,
 		},
+		{
+			Name:        "IndexHtml",
+			Pattern:     "/index.html",
+			Method:      GetMethod,
+			HandlerFunc: handlers.Index,
+		},
+
 		{
 			// Assets
 			Name:        "",
