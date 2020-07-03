@@ -117,7 +117,10 @@ func RouteHandler(inner RouteFunction, name string, hd *handlers.HandlerData) ht
 
 		// Process request and handle its error
 		if err := inner(w, r, hd); err != nil {
-			sendServerError(w)
+			if err != handlers.ErrNotFound {
+				sendServerError(w)
+			}
+
 			log.Error(err)
 			return
 		}

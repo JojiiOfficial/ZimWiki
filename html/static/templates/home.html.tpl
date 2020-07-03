@@ -9,7 +9,7 @@
 
         {{/* Add all available cards */}}
         {{ range .Cards }}
-            <div class="col-lg-3" style="min-width: 150px;">
+            <div class="col-xl-5" style="max-width:600px">
                 <div class="card mb-3 box-shadow">
                     <div class="card-body">
                         <div class="row">
