@@ -2,11 +2,11 @@ package handlers
 
 import (
 	"fmt"
-	"mime"
 	"net/http"
 	"path"
-	"strings"
+	"path/filepath"
 
+	"github.com/JojiiOfficial/gaw"
 	"github.com/gorilla/mux"
 )
 
@@ -14,19 +14,22 @@ import (
 func Assets(w http.ResponseWriter, r *http.Request) error {
 	vars := mux.Vars(r)
 
-	assetType, has := vars["type"]
-	if !has {
-		return fmt.Errorf("Parameter 'type' not given")
+	if !checkVars(vars, "type", "file") {
+		return fmt.Errorf("Missing parameter")
 	}
 
-	reqFile, has := vars["file"]
-	if !has {
-		return fmt.Errorf("Parameter 'file' not given")
+	reqFile := vars["file"]
+	assetType := vars["type"]
+
+	// Get local path
+	path := filepath.Clean(path.Join(assetPath, assetType, reqFile))
+
+	// Check if file exists
+	if !gaw.FileExists(path) {
+		http.NotFound(w, r)
+		return nil
 	}
 
-	path := path.Join(assetPath, assetType, reqFile)
-	m := mime.TypeByExtension(path[strings.LastIndex(path, "."):])
-	w.Header().Set("Content-Type", m)
-
-	return serveStaticFile(path, w)
+	// Serve Asset
+	return serveRawFile(path, w)
 }

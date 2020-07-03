@@ -1,36 +1,25 @@
 package main
 
 import (
-	"encoding/json"
-	"fmt"
 	"net/http"
 	"time"
 
 	log "github.com/sirupsen/logrus"
 )
 
-func sendResponse(w http.ResponseWriter, message string, payload interface{}, params ...int) {
+func sendResponse(w http.ResponseWriter, message string, params ...int) {
 	statusCode := http.StatusOK
-
-	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 
 	if len(params) > 0 {
 		statusCode = params[0]
 		w.WriteHeader(statusCode)
 	}
 
-	var err error
-	if payload != nil {
-		err = json.NewEncoder(w).Encode(payload)
-	} else if len(message) > 0 {
-		_, err = fmt.Fprintln(w, message)
-	}
-
-	LogError(err)
+	w.Write([]byte(message))
 }
 
 func sendServerError(w http.ResponseWriter) {
-	sendResponse(w, "internal server error", nil, http.StatusInternalServerError)
+	sendResponse(w, "internal server error", http.StatusInternalServerError)
 }
 
 // LogError log an error
