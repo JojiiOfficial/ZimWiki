@@ -9,16 +9,26 @@ import (
 	"syscall"
 	"time"
 
+	"git.jojii.de/jojii/zimserver/services"
 	log "github.com/sirupsen/logrus"
 )
 
 func main() {
 	setupLogger()
-	startServer()
+
+	// TODO use os.Args
+	service := services.NewZimService("./library")
+	err := service.Start()
+	if err != nil {
+		log.Fatalln(err)
+		return
+	}
+
+	startServer(service)
 }
 
-func startServer() {
-	router := NewRouter()
+func startServer(zimService *services.ZimService) {
+	router := NewRouter(zimService)
 	server := createServer(router)
 
 	// Start server

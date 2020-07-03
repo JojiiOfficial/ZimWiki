@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"git.jojii.de/jojii/zimserver/handlers"
+	"git.jojii.de/jojii/zimserver/services"
 	"github.com/gorilla/mux"
 	log "github.com/sirupsen/logrus"
 )
@@ -32,7 +33,7 @@ const (
 type Routes []Route
 
 // RouteFunction function for handling a route
-type RouteFunction func(http.ResponseWriter, *http.Request) error
+type RouteFunction func(http.ResponseWriter, *http.Request, *handlers.HandlerData) error
 
 // Routes
 var (
@@ -62,21 +63,25 @@ var (
 )
 
 // NewRouter create new router and its required components
-func NewRouter() *mux.Router {
+func NewRouter(zimService *services.ZimService) *mux.Router {
+	hd := handlers.HandlerData{
+		ZimService: zimService,
+	}
+
 	router := mux.NewRouter().StrictSlash(true)
 	for _, route := range routes {
 		router.
 			Methods(string(route.Method)).
 			Path(route.Pattern).
 			Name(route.Name).
-			Handler(RouteHandler(route.HandlerFunc, route.Name))
+			Handler(RouteHandler(route.HandlerFunc, route.Name, &hd))
 	}
 
 	return router
 }
 
 // RouteHandler logs stuff
-func RouteHandler(inner RouteFunction, name string) http.Handler {
+func RouteHandler(inner RouteFunction, name string, hd *handlers.HandlerData) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		defer func() {
 			if err := r.Body.Close(); err != nil {
@@ -93,7 +98,7 @@ func RouteHandler(inner RouteFunction, name string) http.Handler {
 		start := time.Now()
 
 		// Process request and handle its error
-		if err := inner(w, r); err != nil {
+		if err := inner(w, r, hd); err != nil {
 			sendServerError(w)
 			log.Error(err)
 			return
