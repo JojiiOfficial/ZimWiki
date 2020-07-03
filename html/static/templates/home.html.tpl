@@ -5,16 +5,23 @@
 <br>
 
 <div class="container-fluid" id="ContentContainer" style="margin-top: 18px;">
-    <div class="row row-cols-3 float-none d-xl-flex justify-content-xl-center align-items-xl-center">
+    <div class="row float-none d-xl-flex justify-content-xl-center align-items-xl-center">
 
         {{/* Add all available cards */}}
         {{ range .Cards }}
-            <div class="col-lg-4" style="min-width: 400px;">
-                <div class="card mb-4 box-shadow">
-                    <img class="card-img-top w-100 d-block" src='{{ .Image }}' style="width: 200px;height: 200px;">
+            <div class="col-lg-3" style="min-width: 150px;">
+                <div class="card mb-3 box-shadow">
                     <div class="card-body">
-                        <h4 class="card-title">{{ .Title }}</h4>
-                        <p class="card-text">{{ .Text }}</p><a class="card-link" href="{{ .Link }}">Read</a>
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <img src="{{ .Image }}" style="width: 50px;height: auto;margin-right:10px">
+                            </div>
+                            <div class="col col-xxl-5">
+                                <h4>{{ .Title }}</h4>
+                                <p>{{ .Text }}</p>
+                            </div>
+                        </div>
+                        <a class="card-link" style="float:right" href="{{ .Link }}">Read</a>
                     </div>
                 </div>
             </div>
