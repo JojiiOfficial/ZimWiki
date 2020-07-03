@@ -11,4 +11,5 @@ const (
 
 	// Templates
 	BaseTemplate = root + "index.html"
+	HomeTemplate = TemplatesPath + "home.html.tpl"
 )

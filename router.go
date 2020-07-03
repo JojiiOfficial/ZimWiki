@@ -94,7 +94,9 @@ func RouteHandler(inner RouteFunction, name string) http.Handler {
 
 		// Process request and handle its error
 		if err := inner(w, r); err != nil {
+			sendServerError(w)
 			log.Error(err)
+			return
 		}
 
 		// Print duration of processing
