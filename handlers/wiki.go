@@ -90,6 +90,7 @@ func WikiRaw(w http.ResponseWriter, r *http.Request, hd *HandlerData) error {
 		return nil
 	}
 
+	// Create reader from requested file
 	z.Mx.Lock()
 	defer z.Mx.Unlock()
 	blobReader, _, err := z.BlobReader(&entry)

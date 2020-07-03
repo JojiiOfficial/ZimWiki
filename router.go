@@ -63,9 +63,9 @@ var (
 			HandlerFunc: handlers.Assets,
 		},
 
-		// -- Wiki Raw
-
+		// -- Wiki
 		// Human friendly wiki page
+		// TODO Implement this
 		{
 			Name:        "WikiPreview",
 			Pattern:     "/wiki/preview/{wikiID}/{namespace}/{file}",

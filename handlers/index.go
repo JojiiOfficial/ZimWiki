@@ -23,6 +23,7 @@ func Index(w http.ResponseWriter, r *http.Request, hd *HandlerData) error {
 			favurl = zim.GetRawWikiURL(file, favIcon)
 		}
 
+		// Create homeCard
 		cards = append(cards, HomeCards{
 			Text:  info.GetDescription(),
 			Title: info.Title,
