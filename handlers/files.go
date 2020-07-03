@@ -2,8 +2,13 @@ package handlers
 
 // ...
 const (
-	root         = "html/static/"
-	BaseTemplate = root + "index.html"
+	// Global paths
+	root = "html/static/"
 
-	assetPath = "html/static/assets/"
+	// Paths
+	AssetsPath    = root + "assets/"
+	TemplatesPath = root + "templates/"
+
+	// Templates
+	BaseTemplate = root + "index.html"
 )

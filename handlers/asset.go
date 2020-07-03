@@ -22,7 +22,7 @@ func Assets(w http.ResponseWriter, r *http.Request) error {
 	assetType := vars["type"]
 
 	// Get local path
-	path := filepath.Clean(path.Join(assetPath, assetType, reqFile))
+	path := filepath.Clean(path.Join(AssetsPath, assetType, reqFile))
 
 	// Check if file exists
 	if !gaw.FileExists(path) {
