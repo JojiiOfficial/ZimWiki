@@ -40,15 +40,14 @@ func WikiRaw(w http.ResponseWriter, r *http.Request, hd *HandlerData) error {
 		// Try to use main page if
 		// the page is the only
 		// thing missing
-		if len(sPath) == 4 {
+		if len(sPath) >= 3 {
 			if mainpage := zim.GetMainpageURLRaw(z); len(mainpage) > 0 {
 				newLoc = mainpage
 			}
 		}
 
 		// Something is missing in the given URL
-		w.Header().Set("Location", newLoc)
-		w.WriteHeader(http.StatusMovedPermanently)
+		http.Redirect(w, r, newLoc, http.StatusMovedPermanently)
 		return nil
 	}
 
@@ -103,7 +102,12 @@ func WikiRaw(w http.ResponseWriter, r *http.Request, hd *HandlerData) error {
 		w.Header().Set("Content-Type", mimetypeList[entry.Mimetype()])
 	}
 
+	if entry.IsArticle() {
+		// TODO send embedded article
+	}
+
 	// Copy response
+	// TODO replace absolute links
 	_, err = io.Copy(w, blobReader)
 	return err
 }
