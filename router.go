@@ -70,6 +70,13 @@ var (
 			Method:      GetMethod,
 			HandlerFunc: handlers.WikiRaw,
 		},
+		// Human friendly wiki page
+		{
+			Name:        "WikiPreview",
+			Pattern:     "/wiki/preview/{wikiID}/{namespace}/{file}",
+			Method:      GetMethod,
+			HandlerFunc: handlers.WikiPreview,
+		},
 	}
 )
 
