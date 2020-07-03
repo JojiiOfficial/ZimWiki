@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html style="color: rgb(6,6,6);">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Wiki</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.12.0/css/all.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/assets/fonts/fontawesome5-overrides.min.css">
+    <link rel="stylesheet" href="/assets/css/styles.min.css">
+</head>
+
+<body style="color: rgb(0,0,0);">
+    <div id="wrapper">
+        <div id="sidebar-wrapper">
+            <ul class="sidebar-nav">
+                <li class="sidebar-brand"> <a href="#">Wiki</a></li>
+                <li> <span><a class="text-nowrap" href="#">Home</a></span></li>
+                <li> </li>
+            </ul>
+        </div>
+        <div class="page-content-wrapper">
+            <div class="container-fluid">
+                <div class="row" style="padding: 10px;">
+                    <div class="col-1 col-xl-1"><a class="btn btn-link" role="button" id="menu-toggle" href="#menu-toggle"><i class="fa fa-bars"></i></a></div>
+                    <div class="col d-xl-flex justify-content-xl-end">
+                        <form style="max-width: 300px;">
+                            <div class="input-group"><input class="bg-light form-control border-0 small" type="text" placeholder="Search" autocomplete="on">
+                                <div class="input-group-append"><button class="btn btn-primary py-0" type="button"><i class="fas fa-search"></i></button></div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid" id="ContentContainer" style="margin-top: 18px;">
+            <!-- Include here -->
+        
+            {{template "content" .}}
+        
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/js/bootstrap.bundle.min.js"></script>
+    <script src="/assets/js/script.min.js"></script>
+</body>
+</html>

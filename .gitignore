@@ -1,2 +1,5 @@
 *.zim
+*.zim.gz
 main
+.vscode
+.idea
