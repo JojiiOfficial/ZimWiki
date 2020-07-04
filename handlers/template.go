@@ -15,6 +15,15 @@ var (
 // --- Template data structs  //
 // 						      //
 
+// TemplateData data for the base template
+type TemplateData struct {
+	Favtype string
+	FavIcon string
+
+	HomeTemplateData
+	WikiViewTemplateData
+}
+
 // HomeCards contain data for the
 // cards displayed on the home site
 type HomeCards struct {
@@ -40,7 +49,7 @@ type WikiViewTemplateData struct {
 // 						    //
 
 // Load and execute
-func serveTemplate(tmpFile string, tmpData interface{}, w http.ResponseWriter) error {
+func serveTemplate(tmpFile string, w http.ResponseWriter, btd TemplateData) error {
 	var err error
 	tmplName := path.Base(tmpFile)
 
@@ -57,9 +66,9 @@ func serveTemplate(tmpFile string, tmpData interface{}, w http.ResponseWriter) e
 		}
 
 		// Cache template
-		// TemplateCache[tmplName] = tmpl
+		TemplateCache[tmplName] = tmpl
 	}
 
 	// Execute template
-	return tmpl.ExecuteTemplate(w, path.Base(BaseTemplate), tmpData)
+	return tmpl.ExecuteTemplate(w, path.Base(BaseTemplate), btd)
 }

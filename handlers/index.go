@@ -32,7 +32,9 @@ func Index(w http.ResponseWriter, r *http.Request, hd *HandlerData) error {
 		})
 	}
 
-	return serveTemplate(HomeTemplate, HomeTemplateData{
-		Cards: cards,
-	}, w)
+	return serveTemplate(HomeTemplate, w, TemplateData{
+		HomeTemplateData: HomeTemplateData{
+			Cards: cards,
+		},
+	})
 }

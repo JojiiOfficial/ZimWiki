@@ -130,9 +130,22 @@ func WikiView(w http.ResponseWriter, r *http.Request, hd *HandlerData) error {
 		return nil
 	}
 
-	return serveTemplate(WikiPageTemplate, WikiViewTemplateData{
-		Source: zim.GetRawWikiURL(z, *entry),
-	}, w)
+	var favurl, favType string
+	favIcon, err := z.Favicon()
+	if err == nil {
+		if mimetypeList := z.MimetypeList(); int(favIcon.Mimetype()) < len(mimetypeList) {
+			favType = mimetypeList[favIcon.Mimetype()]
+		}
+		favurl = zim.GetRawWikiURL(z, favIcon)
+	}
+
+	return serveTemplate(WikiPageTemplate, w, TemplateData{
+		FavIcon: favurl,
+		Favtype: favType,
+		WikiViewTemplateData: WikiViewTemplateData{
+			Source: zim.GetRawWikiURL(z, *entry),
+		},
+	})
 }
 
 func parseURLPath(u *url.URL) string {

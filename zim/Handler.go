@@ -5,6 +5,7 @@ import (
 	"path/filepath"
 	"sync"
 
+	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 	"github.com/tim-st/go-zim"
 )
@@ -47,7 +48,7 @@ func (zs *Handler) GetFiles() []File {
 
 // Load all files in given Dir
 func (zs *Handler) loadFiles() error {
-	var success, errors int
+	var success, errs int
 
 	filepath.Walk(zs.Dir, func(path string, info os.FileInfo, err error) error {
 		// Ignore non regular files
@@ -65,8 +66,8 @@ func (zs *Handler) loadFiles() error {
 			// Try to open any file
 			f, err := zim.Open(path)
 			if err != nil {
-				errors++
-				log.Error(err)
+				errs++
+				log.Error(errors.Wrap(err, path))
 
 				// Ignore errors for now
 				return nil
@@ -82,7 +83,7 @@ func (zs *Handler) loadFiles() error {
 		return nil
 	})
 
-	if success == 0 && errors > 0 {
+	if success == 0 && errs > 0 {
 		log.Fatal("Too many errors")
 	}
 
