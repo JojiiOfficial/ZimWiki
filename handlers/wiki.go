@@ -115,7 +115,8 @@ func WikiRaw(w http.ResponseWriter, r *http.Request, hd *HandlerData) error {
 
 	// Send raw file
 	// TODO replace absolute links
-	_, err = io.Copy(w, blobReader)
+	buff := make([]byte, 1024*1024)
+	_, err = io.CopyBuffer(w, blobReader, buff)
 	return err
 }
 
