@@ -28,7 +28,7 @@ func Index(w http.ResponseWriter, r *http.Request, hd *HandlerData) error {
 			Text:  info.GetDescription(),
 			Title: info.Title,
 			Image: favurl,
-			Link:  zim.GetMainpageURLRaw(file),
+			Link:  zim.GetMainpageURL(file),
 		})
 	}
 

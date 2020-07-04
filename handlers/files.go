@@ -10,6 +10,7 @@ const (
 	TemplatesPath = root + "templates/"
 
 	// Templates
-	BaseTemplate = root + "index.html"
-	HomeTemplate = TemplatesPath + "home.html.tpl"
+	BaseTemplate     = root + "index.html"
+	HomeTemplate     = TemplatesPath + "home.html.tpl"
+	WikiPageTemplate = TemplatesPath + "viewPage.html.tpl"
 )

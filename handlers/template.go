@@ -30,6 +30,11 @@ type HomeTemplateData struct {
 	Cards []HomeCards
 }
 
+// WikiViewTemplateData data for wiki view page
+type WikiViewTemplateData struct {
+	Source string
+}
+
 // 						    //
 // --- Template functions   //
 // 						    //
@@ -52,7 +57,7 @@ func serveTemplate(tmpFile string, tmpData interface{}, w http.ResponseWriter) e
 		}
 
 		// Cache template
-		TemplateCache[tmplName] = tmpl
+		// TemplateCache[tmplName] = tmpl
 	}
 
 	// Execute template

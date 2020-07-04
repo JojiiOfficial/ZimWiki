@@ -10,7 +10,7 @@ import (
 // ...
 const (
 	WikiRawPrefix = "/wiki/raw/"
-	WikiPrefix    = "/wiki/preview/"
+	WikiPrefix    = "/wiki/view/"
 )
 
 // GetRawWikiURL returns the wiki url for the given DE

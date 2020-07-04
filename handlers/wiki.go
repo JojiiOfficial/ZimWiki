@@ -10,9 +10,7 @@ import (
 	gzim "github.com/tim-st/go-zim"
 )
 
-// WikiRaw handle direct wiki requests, without embedding into the webUI
-func WikiRaw(w http.ResponseWriter, r *http.Request, hd *HandlerData) error {
-	// Split requested path by /
+func parseWikiRequest(w http.ResponseWriter, r *http.Request, hd *HandlerData) (*zim.File, *gzim.Namespace, *gzim.DirectoryEntry, bool) {
 	sPath := strings.Split(parseURLPath(r.URL), "/")
 
 	var reqWikiID string
@@ -29,7 +27,7 @@ func WikiRaw(w http.ResponseWriter, r *http.Request, hd *HandlerData) error {
 		z = hd.ZimService.FindWikiFile(reqWikiID)
 		hd.ZimService.Mx.Unlock()
 		if z == nil {
-			return nil
+			return nil, nil, nil, false
 		}
 	}
 
@@ -41,21 +39,21 @@ func WikiRaw(w http.ResponseWriter, r *http.Request, hd *HandlerData) error {
 		// the page is the only
 		// thing missing
 		if len(sPath) >= 3 {
-			if mainpage := zim.GetMainpageURLRaw(z); len(mainpage) > 0 {
+			if mainpage := zim.GetMainpageURL(z); len(mainpage) > 0 {
 				newLoc = mainpage
 			}
 		}
 
 		// Something is missing in the given URL
 		http.Redirect(w, r, newLoc, http.StatusMovedPermanently)
-		return nil
+		return nil, nil, nil, false
 	}
 
 	// Throw error for invalid namespaces
 	reqNamespace := sPath[3]
 	if !strings.ContainsAny(reqNamespace, "ABIJMUVWX-") || len(reqNamespace) > 1 {
 		http.NotFound(w, r)
-		return nil
+		return nil, nil, nil, false
 	}
 
 	// Parse namespace
@@ -65,7 +63,7 @@ func WikiRaw(w http.ResponseWriter, r *http.Request, hd *HandlerData) error {
 	case gzim.NamespaceLayout, gzim.NamespaceArticles, gzim.NamespaceImagesFiles, gzim.NamespaceImagesText:
 	default:
 		http.NotFound(w, r)
-		return nil
+		return nil, nil, nil, false
 	}
 
 	// reqFileURL is the url of the
@@ -77,7 +75,7 @@ func WikiRaw(w http.ResponseWriter, r *http.Request, hd *HandlerData) error {
 	z.Mx.Unlock()
 	if !found {
 		http.NotFound(w, r)
-		return nil
+		return nil, nil, nil, false
 	}
 
 	// Follow redirect
@@ -86,13 +84,26 @@ func WikiRaw(w http.ResponseWriter, r *http.Request, hd *HandlerData) error {
 		entry, _ = z.FollowRedirect(&entry)
 		z.Mx.Unlock()
 		http.Redirect(w, r, zim.GetRawWikiURL(z, entry), http.StatusNotFound)
+		return nil, nil, nil, false
+	}
+
+	return z, &namespace, &entry, true
+}
+
+// WikiRaw handle direct wiki requests, without embedding into the webUI
+func WikiRaw(w http.ResponseWriter, r *http.Request, hd *HandlerData) error {
+	// Find file and dirEntry
+	z, _, entry, success := parseWikiRequest(w, r, hd)
+	if !success {
+		// We already handled
+		// http errors & redirects
 		return nil
 	}
 
 	// Create reader from requested file
 	z.Mx.Lock()
 	defer z.Mx.Unlock()
-	blobReader, _, err := z.BlobReader(&entry)
+	blobReader, _, err := z.BlobReader(entry)
 	if err != nil {
 		return err
 	}
@@ -102,19 +113,25 @@ func WikiRaw(w http.ResponseWriter, r *http.Request, hd *HandlerData) error {
 		w.Header().Set("Content-Type", mimetypeList[entry.Mimetype()])
 	}
 
-	if entry.IsArticle() {
-		// TODO send embedded article
-	}
-
-	// Copy response
+	// Send raw file
 	// TODO replace absolute links
 	_, err = io.Copy(w, blobReader)
 	return err
 }
 
-// WikiPreview sends a human friendly preview page for a WIKI site
-func WikiPreview(w http.ResponseWriter, r *http.Request, hd *HandlerData) error {
-	return nil
+// WikiView sends a human friendly preview page for a WIKI site
+func WikiView(w http.ResponseWriter, r *http.Request, hd *HandlerData) error {
+	// Find file and dirEntry
+	z, _, entry, success := parseWikiRequest(w, r, hd)
+	if !success {
+		// We already handled
+		// http errors & redirects
+		return nil
+	}
+
+	return serveTemplate(WikiPageTemplate, WikiViewTemplateData{
+		Source: zim.GetRawWikiURL(z, *entry),
+	}, w)
 }
 
 func parseURLPath(u *url.URL) string {

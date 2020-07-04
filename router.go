@@ -62,16 +62,6 @@ var (
 			Method:      GetMethod,
 			HandlerFunc: handlers.Assets,
 		},
-
-		// -- Wiki
-		// Human friendly wiki page
-		// TODO Implement this
-		{
-			Name:        "WikiPreview",
-			Pattern:     "/wiki/preview/{wikiID}/{namespace}/{file}",
-			Method:      GetMethod,
-			HandlerFunc: handlers.WikiPreview,
-		},
 	}
 )
 
@@ -82,6 +72,13 @@ var (
 		Name:        "",
 		Method:      GetMethod,
 		HandlerFunc: handlers.WikiRaw,
+	}
+
+	// Raw wiki page
+	wikiView = Route{
+		Name:        "WikiView",
+		Method:      GetMethod,
+		HandlerFunc: handlers.WikiView,
 	}
 )
 
@@ -99,6 +96,12 @@ func NewRouter(zimService *zim.Handler) *mux.Router {
 			Name(route.Name).
 			Handler(RouteHandler(route.HandlerFunc, route.Name, &hd))
 	}
+
+	// Add view handler
+	router.Methods(string(wikiView.Method)).
+		PathPrefix("/wiki/view/").
+		Name(wikiView.Name).
+		Handler(RouteHandler(wikiView.HandlerFunc, wikiView.Name, &hd))
 
 	// Add raw handler
 	router.Methods(string(wikiRaw.Method)).

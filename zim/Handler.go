@@ -3,7 +3,6 @@ package zim
 import (
 	"os"
 	"path/filepath"
-	"strings"
 	"sync"
 
 	log "github.com/sirupsen/logrus"
@@ -48,7 +47,9 @@ func (zs *Handler) GetFiles() []File {
 
 // Load all files in given Dir
 func (zs *Handler) loadFiles() error {
-	err := filepath.Walk(zs.Dir, func(path string, info os.FileInfo, err error) error {
+	var success, errors int
+
+	filepath.Walk(zs.Dir, func(path string, info os.FileInfo, err error) error {
 		// Ignore non regular files
 		if !info.IsDir() {
 
@@ -63,13 +64,11 @@ func (zs *Handler) loadFiles() error {
 
 			// Try to open any file
 			f, err := zim.Open(path)
-
 			if err != nil {
-				// Ignore errors for non .zim files
-				if strings.HasSuffix(info.Name(), ".zim") {
-					return err
-				}
+				errors++
+				log.Error(err)
 
+				// Ignore errors for now
 				return nil
 			}
 
@@ -77,13 +76,14 @@ func (zs *Handler) loadFiles() error {
 				File: f,
 				Path: path,
 			})
+			success++
 		}
 
 		return nil
 	})
 
-	if err != nil {
-		return err
+	if success == 0 && errors > 0 {
+		log.Fatal("Too many errors")
 	}
 
 	return nil
