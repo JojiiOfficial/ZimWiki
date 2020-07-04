@@ -1,6 +1,6 @@
 {{ define "content" }}
 
-<embed type="text/html" src="{{ .Source }}" style="height:100%;position:absolute;width:100%;right:0">
+<embed type="text/html" src="{{ .Source }}" style="height:90%;position:absolute;width:100%;right:0">
 
 
 {{/* Hide sidebar */}}
