@@ -48,8 +48,9 @@ type WikiViewTemplateData struct {
 
 // SearchTemplateData data for search
 type SearchTemplateData struct {
-	QueryText string
-	Results   []SearchResult
+	SearchSource string
+	QueryText    string
+	Results      []SearchResult
 }
 
 // SearchResult represents a single result of a search query

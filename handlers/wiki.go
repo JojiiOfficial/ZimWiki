@@ -131,7 +131,9 @@ func WikiView(w http.ResponseWriter, r *http.Request, hd *HandlerData) error {
 	}
 
 	var favurl, favType string
+	z.Mx.Lock()
 	favIcon, err := z.Favicon()
+	z.Mx.Unlock()
 	if err == nil {
 		if mimetypeList := z.MimetypeList(); int(favIcon.Mimetype()) < len(mimetypeList) {
 			favType = mimetypeList[favIcon.Mimetype()]

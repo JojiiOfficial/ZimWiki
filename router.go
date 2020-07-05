@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"time"
 
+	_ "net/http/pprof"
+
 	"git.jojii.de/jojii/zimserver/handlers"
 	"git.jojii.de/jojii/zimserver/zim"
 	"github.com/gorilla/mux"
@@ -124,7 +126,7 @@ func RouteHandler(inner RouteFunction, name string, hd *handlers.HandlerData) ht
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		defer func() {
 			if err := r.Body.Close(); err != nil {
-				log.Info(err)
+				log.Error(err)
 			}
 		}()
 
@@ -139,7 +141,7 @@ func RouteHandler(inner RouteFunction, name string, hd *handlers.HandlerData) ht
 		// Process request and handle its error
 		if err := inner(w, r, hd); err != nil {
 			if _, ok := err.(*net.OpError); ok {
-				// Ignore network errors
+				log.Warn(err)
 				return
 			}
 

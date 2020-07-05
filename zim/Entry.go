@@ -25,6 +25,8 @@ func GetWikiURL(zimFile *File, entry zim.DirectoryEntry) string {
 
 // GetMainpageName of zimFile
 func GetMainpageName(zimFile *File) *zim.DirectoryEntry {
+	zimFile.Mx.Lock()
+	defer zimFile.Mx.Unlock()
 	mp, err := zimFile.MainPage()
 	if err != nil {
 		log.Error(err)

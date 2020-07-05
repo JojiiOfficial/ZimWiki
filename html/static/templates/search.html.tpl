@@ -1,6 +1,15 @@
 {{  define "content" }}
 
-    <center><h1> Search results for "{{ .QueryText }}" </h1></center>
+    <center>
+    <div>
+        <h1> Search results for "{{ .QueryText }}" </h1>
+        <span style="width:100%;text-align:center">
+            [in {{ .SearchSource }}]
+        </span>
+    </div>
+    </center>
+
+    <br><br>
 
     {{ range .Results }}
         <div class="row" style="padding-bottom: 15px;">
