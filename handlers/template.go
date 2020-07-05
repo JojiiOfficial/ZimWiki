@@ -19,9 +19,11 @@ var (
 type TemplateData struct {
 	Favtype string
 	FavIcon string
+	Wiki    string
 
 	HomeTemplateData
 	WikiViewTemplateData
+	SearchTemplateData
 }
 
 // HomeCards contain data for the
@@ -42,6 +44,19 @@ type HomeTemplateData struct {
 // WikiViewTemplateData data for wiki view page
 type WikiViewTemplateData struct {
 	Source string
+}
+
+// SearchTemplateData data for search
+type SearchTemplateData struct {
+	QueryText string
+	Results   []SearchResult
+}
+
+// SearchResult represents a single result of a search query
+type SearchResult struct {
+	Wiki  string
+	Title string
+	Link  string
 }
 
 // 						    //
@@ -66,7 +81,11 @@ func serveTemplate(tmpFile string, w http.ResponseWriter, btd TemplateData) erro
 		}
 
 		// Cache template
-		TemplateCache[tmplName] = tmpl
+		// TemplateCache[tmplName] = tmpl
+	}
+
+	if len(btd.Wiki) == 0 {
+		btd.Wiki = "-"
 	}
 
 	// Execute template

@@ -62,6 +62,13 @@ var (
 			Method:      GetMethod,
 			HandlerFunc: handlers.Assets,
 		},
+
+		{
+			Name:        "Search",
+			Pattern:     "/search/{wiki}",
+			Method:      GetMethod,
+			HandlerFunc: handlers.Search,
+		},
 	}
 )
 

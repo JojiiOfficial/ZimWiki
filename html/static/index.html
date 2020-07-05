@@ -19,6 +19,9 @@
             width: 50%;
         }
     </style>
+    <script>
+        var wiki = '{{ .Wiki }}'
+    </script>
 </head>
 
 <body style="color: rgb(0,0,0);">
@@ -34,11 +37,16 @@
                 <div class="row" style="padding-top: 10px;">
                     <div class="col-2 col-xl-2"><a class="btn btn-link" role="button" id="menu-toggle" href="#menu-toggle"><i class="fa fa-bars"></i></a></div>
                     <div class="col justify-content-xl-start">
-                        <form style="max-width: 300px;float:right">
-                            <div class="input-group"><input class="bg-light form-control border-0 small" type="text" placeholder="Search" autocomplete="on">
-                                <div class="input-group-append"><button class="btn btn-primary py-0" type="button"><i class="fas fa-search"></i></button></div>
+                        <div style="max-width: 300px;float:right">
+                            <div class="input-group">
+                                <input class="bg-light form-control border-0 small" type="text" id="searchtxt" onkeydown="enterSearch(this)"  placeholder="Search">
+                                <div class="input-group-append">
+                                    <button class="btn btn-primary py-0" type="button" onclick='search(document.getElementById("searchtxt").value)'>
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                </div>
                             </div>
-                        </form>
+                        </div>
                     </div>
                 </div>
             </div>

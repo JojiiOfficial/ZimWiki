@@ -142,6 +142,7 @@ func WikiView(w http.ResponseWriter, r *http.Request, hd *HandlerData) error {
 	return serveTemplate(WikiPageTemplate, w, TemplateData{
 		FavIcon: favurl,
 		Favtype: favType,
+		Wiki:    z.GetID(),
 		WikiViewTemplateData: WikiViewTemplateData{
 			Source: zim.GetRawWikiURL(z, *entry),
 		},
