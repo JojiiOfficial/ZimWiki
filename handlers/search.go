@@ -95,9 +95,25 @@ func Search(w http.ResponseWriter, r *http.Request, hd *HandlerData) error {
 		res = searchSingle(query[0], z)
 	}
 
+	favCache := make(map[string]string)
 	results := make([]SearchResult, len(res))
+
 	for i := range res {
+		// Get Favicon of each file
+		fav, has := favCache[res[i].GetID()]
+		if !has {
+			favIcon, err := res[i].Favicon()
+			if err == nil {
+				fav = zim.GetRawWikiURL(res[i].File, favIcon)
+			} else {
+				fav = ""
+			}
+
+			favCache[res[i].GetID()] = fav
+		}
+
 		results[i] = SearchResult{
+			Img:   fav,
 			Link:  zim.GetWikiURL(res[i].File, *res[i].DirectoryEntry),
 			Title: string(res[i].Title()),
 			Wiki:  wiki,

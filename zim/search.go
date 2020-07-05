@@ -21,9 +21,18 @@ type SRes struct {
 // ByPercentage sort by perc
 type ByPercentage []SRes
 
-func (a ByPercentage) Len() int           { return len(a) }
-func (a ByPercentage) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
-func (a ByPercentage) Less(i, j int) bool { return a[i].Similarity < a[j].Similarity }
+func (a ByPercentage) Len() int      { return len(a) }
+func (a ByPercentage) Swap(i, j int) { a[i], a[j] = a[j], a[i] }
+func (a ByPercentage) Less(i, j int) bool {
+	if a[i].Similarity != a[j].Similarity {
+		return a[i].Similarity < a[j].Similarity
+	}
+
+	// If we have two items with the same similarity,
+	// we use the alphabet order to provide the
+	// the same result for the same query
+	return string(a[i].DirectoryEntry.Title()) < string(a[j].DirectoryEntry.Title())
+}
 
 // SearchForEntry in zim file
 func (zf *File) SearchForEntry(query string, limit int) []SRes {
@@ -72,10 +81,17 @@ func (zf *File) SearchForEntry(query string, limit int) []SRes {
 // Get string destination in percent and
 // prefer equal same prefixes
 func getStrDest(a, b string) int {
-	var add float32
-	if strings.HasPrefix(strings.ToLower(a), strings.ToLower(b)) {
-		add = 0.6
+	al := strings.ToLower(a)
+	bl := strings.ToLower(b)
+
+	if al == bl {
+		return 200
 	}
 
-	return int(float32(levenshtein.Similarity(a, b, nil))+add) * 100
+	var add int
+	if strings.HasPrefix(al, bl) {
+		add = 60
+	}
+
+	return int(float32(levenshtein.Similarity(a, b, nil)))*100 + add
 }

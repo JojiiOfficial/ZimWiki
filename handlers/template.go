@@ -55,6 +55,7 @@ type SearchTemplateData struct {
 
 // SearchResult represents a single result of a search query
 type SearchResult struct {
+	Img   string
 	Wiki  string
 	Title string
 	Link  string
