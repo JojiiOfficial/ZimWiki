@@ -7,6 +7,7 @@ import (
 
 	"github.com/JojiiOfficial/gopool"
 	"github.com/agext/levenshtein"
+	"github.com/sirupsen/logrus"
 	"github.com/tim-st/go-zim"
 )
 
@@ -42,6 +43,18 @@ func (zf *File) SearchForEntry(query string, limit int) []SRes {
 		title := string(t)
 
 		if strings.Contains(strings.ToLower(title), strings.ToLower(query)) {
+			// Follow redirect
+			zf.Mx.Lock()
+			if res[pos].IsRedirect() {
+				fl, err := zf.FollowRedirect(&res[pos])
+				if err == nil {
+					res[pos] = fl
+				} else {
+					logrus.Warn(err)
+				}
+			}
+			zf.Mx.Unlock()
+
 			mx.Lock()
 			dirEntries = append(dirEntries, SRes{
 				File:           zf,
