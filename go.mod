@@ -4,6 +4,8 @@ go 1.14
 
 require (
 	github.com/JojiiOfficial/gaw v1.2.8
+	github.com/JojiiOfficial/gopool v0.0.2
+	github.com/agext/levenshtein v1.2.3
 	github.com/gorilla/mux v1.7.4
 	github.com/pkg/errors v0.9.1
 	github.com/sirupsen/logrus v1.6.0
