@@ -35,20 +35,19 @@ func (zf *File) SearchForEntry(query string, limit int) []SRes {
 	dirEntries := make([]SRes, 0)
 
 	gopool.New(len(res), runtime.NumCPU(), func(wg *sync.WaitGroup, pos, total, workerID int) interface{} {
-		t := res[pos].Title()
-		if len(t) == 0 || t[0] == 0 {
+		entry := &res[pos]
+		if len(entry.Title()) == 0 {
 			return nil
 		}
-
-		title := string(t)
+		title := string(entry.Title())
 
 		if strings.Contains(strings.ToLower(title), strings.ToLower(query)) {
 			// Follow redirect
 			zf.Mx.Lock()
-			if res[pos].IsRedirect() {
-				fl, err := zf.FollowRedirect(&res[pos])
+			if entry.IsRedirect() {
+				fl, err := zf.FollowRedirect(entry)
 				if err == nil {
-					res[pos] = fl
+					entry = &fl
 				} else {
 					logrus.Warn(err)
 				}
@@ -58,7 +57,7 @@ func (zf *File) SearchForEntry(query string, limit int) []SRes {
 			mx.Lock()
 			dirEntries = append(dirEntries, SRes{
 				File:           zf,
-				DirectoryEntry: &res[pos],
+				DirectoryEntry: entry,
 				Similarity:     getStrDest(title, query),
 			})
 			mx.Unlock()
