@@ -43,5 +43,8 @@ Run the binary and go to `https://localhost:8080`
 # Features
 - [x] Read/Handle multiple Zim files
 - [x] Read Wikis
-- [x] Search
+- [x] Search (inside a wiki or globally)
+- [x] Send content gzipped
+- [x] Use symlinks as .zim link
 - [ ] Replace absolute links with relative ones
+- [ ] Config file

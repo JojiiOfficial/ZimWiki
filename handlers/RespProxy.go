@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"fmt"
 	"io"
 	"net/http"
 
@@ -66,7 +65,6 @@ func (rp ResponseProxy) Write(b []byte) (int, error) {
 // Done does all the rest
 func (rp ResponseProxy) Done() {
 	if rp.useGzip && rp.gzipWriter != nil {
-		fmt.Println("send gzip header")
 		rp.gzipWriter.Close()
 	}
 }
