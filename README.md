@@ -43,5 +43,5 @@ Run the binary and go to `https://localhost:8080`
 # Features
 - [x] Read/Handle multiple Zim files
 - [x] Read Wikis
+- [x] Search
 - [ ] Replace absolute links with relative ones
-- [ ] Search
