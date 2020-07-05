@@ -113,6 +113,9 @@ func WikiRaw(w http.ResponseWriter, r *http.Request, hd *HandlerData) error {
 		w.Header().Set("Content-Type", mimetypeList[entry.Mimetype()])
 	}
 
+	// Cache files
+	w.Header().Set("Cache-Control", "max-age=31536000, public")
+
 	// Send raw file
 	// TODO replace absolute links
 	buff := make([]byte, 1024*1024)
@@ -140,6 +143,9 @@ func WikiView(w http.ResponseWriter, r *http.Request, hd *HandlerData) error {
 		}
 		favurl = zim.GetRawWikiURL(z, favIcon)
 	}
+
+	// Cache files
+	w.Header().Set("Cache-Control", "max-age=31536000, public")
 
 	return serveTemplate(WikiPageTemplate, w, TemplateData{
 		FavIcon: favurl,

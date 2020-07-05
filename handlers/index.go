@@ -32,6 +32,9 @@ func Index(w http.ResponseWriter, r *http.Request, hd *HandlerData) error {
 		})
 	}
 
+	// Cache files
+	w.Header().Set("Cache-Control", "max-age=31536000, public")
+
 	return serveTemplate(HomeTemplate, w, TemplateData{
 		HomeTemplateData: HomeTemplateData{
 			Cards: cards,

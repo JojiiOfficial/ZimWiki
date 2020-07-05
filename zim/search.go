@@ -28,6 +28,10 @@ func (a ByPercentage) Less(i, j int) bool {
 		return a[i].Similarity < a[j].Similarity
 	}
 
+	if len(a[i].Title()) != len(a[j].Title()) {
+		return len(a[i].Title()) > len(a[j].Title())
+	}
+
 	// If we have two items with the same similarity,
 	// we use the alphabet order to provide the
 	// the same result for the same query
@@ -90,7 +94,7 @@ func getStrDest(a, b string) int {
 
 	var add int
 	if strings.HasPrefix(al, bl) {
-		add = 60
+		add = 70
 	}
 
 	return int(float32(levenshtein.Similarity(a, b, nil)))*100 + add

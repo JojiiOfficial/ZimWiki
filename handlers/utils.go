@@ -10,6 +10,9 @@ import (
 
 // Serve file and set content-type accordingly
 func serveRawFile(path string, w http.ResponseWriter) error {
+	// Cache files
+	w.Header().Set("Cache-Control", "max-age=31536000, public")
+
 	// Detect and set mimetype
 	m := mime.TypeByExtension(path[strings.LastIndex(path, "."):])
 	w.Header().Set("Content-Type", m)
