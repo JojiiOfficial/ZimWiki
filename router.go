@@ -142,15 +142,21 @@ func RouteHandler(inner RouteFunction, name string, hd handlers.HandlerData) htt
 		// Set accept gzip
 		hd.AcceptGzip = strings.Contains(r.Header.Get("Accept-Encoding"), "gzip")
 
+		// Use ResponseProxy
+		// This way we can automatically
+		// send content compressed using gzip
+		rp := handlers.NewResponseProxy(hd.AcceptGzip, w)
+		defer rp.Done()
+
 		// Process request and handle its error
-		if err := inner(w, r, hd); err != nil {
+		if err := inner(rp, r, hd); err != nil {
 			if _, ok := err.(*net.OpError); ok {
 				log.Warn(err)
 				return
 			}
 
 			if err != handlers.ErrNotFound {
-				sendServerError(w)
+				sendServerError(rp)
 			}
 
 			log.Error(err)
