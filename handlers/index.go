@@ -7,7 +7,7 @@ import (
 )
 
 // Index handle index route
-func Index(w http.ResponseWriter, r *http.Request, hd *HandlerData) error {
+func Index(w http.ResponseWriter, r *http.Request, hd HandlerData) error {
 	var cards []HomeCards
 
 	// Create cards

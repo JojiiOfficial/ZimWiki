@@ -11,7 +11,7 @@ import (
 )
 
 // Assets for static assets
-func Assets(w http.ResponseWriter, r *http.Request, hd *HandlerData) error {
+func Assets(w http.ResponseWriter, r *http.Request, hd HandlerData) error {
 	vars := mux.Vars(r)
 
 	if !checkVars(vars, "type", "file") {

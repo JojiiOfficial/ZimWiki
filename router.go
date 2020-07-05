@@ -3,6 +3,7 @@ package main
 import (
 	"net"
 	"net/http"
+	"strings"
 	"time"
 
 	_ "net/http/pprof"
@@ -36,7 +37,7 @@ const (
 type Routes []Route
 
 // RouteFunction function for handling a route
-type RouteFunction func(http.ResponseWriter, *http.Request, *handlers.HandlerData) error
+type RouteFunction func(http.ResponseWriter, *http.Request, handlers.HandlerData) error
 
 // Routes
 var (
@@ -103,26 +104,26 @@ func NewRouter(zimService *zim.Handler) *mux.Router {
 			Methods(string(route.Method)).
 			Path(route.Pattern).
 			Name(route.Name).
-			Handler(RouteHandler(route.HandlerFunc, route.Name, &hd))
+			Handler(RouteHandler(route.HandlerFunc, route.Name, hd))
 	}
 
 	// Add view handler
 	router.Methods(string(wikiView.Method)).
 		PathPrefix("/wiki/view/").
 		Name(wikiView.Name).
-		Handler(RouteHandler(wikiView.HandlerFunc, wikiView.Name, &hd))
+		Handler(RouteHandler(wikiView.HandlerFunc, wikiView.Name, hd))
 
 	// Add raw handler
 	router.Methods(string(wikiRaw.Method)).
 		PathPrefix("/wiki/raw/").
 		Name(wikiRaw.Name).
-		Handler(RouteHandler(wikiRaw.HandlerFunc, wikiRaw.Name, &hd))
+		Handler(RouteHandler(wikiRaw.HandlerFunc, wikiRaw.Name, hd))
 
 	return router
 }
 
 // RouteHandler logs stuff
-func RouteHandler(inner RouteFunction, name string, hd *handlers.HandlerData) http.Handler {
+func RouteHandler(inner RouteFunction, name string, hd handlers.HandlerData) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		defer func() {
 			if err := r.Body.Close(); err != nil {
@@ -137,6 +138,9 @@ func RouteHandler(inner RouteFunction, name string, hd *handlers.HandlerData) ht
 		}
 
 		start := time.Now()
+
+		// Set accept gzip
+		hd.AcceptGzip = strings.Contains(r.Header.Get("Accept-Encoding"), "gzip")
 
 		// Process request and handle its error
 		if err := inner(w, r, hd); err != nil {

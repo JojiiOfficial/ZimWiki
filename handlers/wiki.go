@@ -10,7 +10,7 @@ import (
 	gzim "github.com/tim-st/go-zim"
 )
 
-func parseWikiRequest(w http.ResponseWriter, r *http.Request, hd *HandlerData) (*zim.File, *gzim.Namespace, *gzim.DirectoryEntry, bool) {
+func parseWikiRequest(w http.ResponseWriter, r *http.Request, hd HandlerData) (*zim.File, *gzim.Namespace, *gzim.DirectoryEntry, bool) {
 	sPath := strings.Split(parseURLPath(r.URL), "/")
 
 	var reqWikiID string
@@ -91,7 +91,7 @@ func parseWikiRequest(w http.ResponseWriter, r *http.Request, hd *HandlerData) (
 }
 
 // WikiRaw handle direct wiki requests, without embedding into the webUI
-func WikiRaw(w http.ResponseWriter, r *http.Request, hd *HandlerData) error {
+func WikiRaw(w http.ResponseWriter, r *http.Request, hd HandlerData) error {
 	// Find file and dirEntry
 	z, _, entry, success := parseWikiRequest(w, r, hd)
 	if !success {
@@ -124,7 +124,7 @@ func WikiRaw(w http.ResponseWriter, r *http.Request, hd *HandlerData) error {
 }
 
 // WikiView sends a human friendly preview page for a WIKI site
-func WikiView(w http.ResponseWriter, r *http.Request, hd *HandlerData) error {
+func WikiView(w http.ResponseWriter, r *http.Request, hd HandlerData) error {
 	// Find file and dirEntry
 	z, _, entry, success := parseWikiRequest(w, r, hd)
 	if !success {

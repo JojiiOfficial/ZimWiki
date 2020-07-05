@@ -60,7 +60,7 @@ func searchGlobal(query string, handler *zim.Handler) []zim.SRes {
 }
 
 // Search handles serach requests
-func Search(w http.ResponseWriter, r *http.Request, hd *HandlerData) error {
+func Search(w http.ResponseWriter, r *http.Request, hd HandlerData) error {
 	vars := mux.Vars(r)
 	wiki, ok := vars["wiki"]
 	if !ok {
