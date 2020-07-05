@@ -10,7 +10,7 @@
         {{/* Add all available cards */}}
         {{ range .Cards }}
             <div class="col-xl-5" style="max-width:600px">
-                <div class="card mb-3 box-shadow">
+                <div class="card mb-3 box-shadow shadow-sm" style="cursor:pointer" onclick="window.location.href='{{ .Link }}'">
                     <div class="card-body">
                         <div class="row">
                             <div class="col-sm-4">
