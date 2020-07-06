@@ -3,6 +3,7 @@ package zim
 import (
 	"fmt"
 	"io"
+	"os"
 	"strconv"
 	"sync"
 	"time"
@@ -125,4 +126,25 @@ f:
 	}
 
 	return writtenBytes, nil
+}
+
+// HasIndexFile return true if wiki
+// has an index file
+func (zf *File) HasIndexFile() bool {
+	if len(zf.IndexFile) == 0 {
+		return false
+	}
+	s, err := os.Stat(zf.IndexFile)
+	return err == nil && s.Size() > 0
+}
+
+// GetIndexReader gets indexReader for file
+func (zf *File) GetIndexReader() *IndexReader {
+	if !zf.HasIndexFile() {
+		return nil
+	}
+
+	return &IndexReader{
+		IndexFile: zf.IndexFile,
+	}
 }

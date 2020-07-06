@@ -3,7 +3,6 @@ package zim
 import (
 	"hash/fnv"
 	"strings"
-	"sync"
 
 	"github.com/agext/levenshtein"
 	"github.com/sirupsen/logrus"
@@ -39,7 +38,72 @@ func (a ByPercentage) Less(i, j int) bool {
 
 // SearchForEntry in zim file
 func (zf *File) SearchForEntry(query string) []SRes {
-	mx := sync.Mutex{}
+	if zf.HasIndexFile() {
+		// Try to do an index search
+		res, success := zf.indexSearch(query)
+		if success {
+			return res
+		}
+	}
+
+	// If index search was not successful
+	// or index file doesn't exists
+	// do a full search
+	return zf.fullSearch(query)
+}
+
+func (zf *File) indexSearch(query string) ([]SRes, bool) {
+	// Get the index reader for the file
+	indexReader := zf.GetIndexReader()
+	if indexReader == nil {
+		return nil, false
+	}
+
+	type wasAdded = struct{}
+	alreadyAdded := make(map[uint32]wasAdded, 0)
+	dirEntries := make([]SRes, 0)
+
+	// Find in index file
+	indexReader.ForEachSimilar(query, func(title string, pos uint32) error {
+		zf.Mx.Lock()
+		entry, err := zf.EntryAtTitlePosition(pos)
+		zf.Mx.Unlock()
+		if err != nil {
+			return err
+		}
+
+		var key = hash(entry.URL())
+		if _, ok := alreadyAdded[key]; ok {
+			return nil
+		}
+
+		// Follow redirect
+		if entry.IsRedirect() {
+			fl, err := zf.FollowRedirect(&entry)
+			if err == nil {
+				entry = fl
+			} else {
+				logrus.Warn(err)
+			}
+
+			// Also add redirected to map
+			alreadyAdded[hash(entry.URL())] = wasAdded{}
+		}
+
+		alreadyAdded[key] = wasAdded{}
+
+		dirEntries = append(dirEntries, SRes{
+			File:           zf,
+			DirectoryEntry: &entry,
+			Similarity:     getStrDest(title, query),
+		})
+		return nil
+	})
+
+	return dirEntries, true
+}
+
+func (zf *File) fullSearch(query string) []SRes {
 	dirEntries := make([]SRes, 0)
 
 	type wasAdded = struct{}
@@ -74,13 +138,11 @@ func (zf *File) SearchForEntry(query string) []SRes {
 
 			alreadyAdded[key] = wasAdded{}
 
-			mx.Lock()
 			dirEntries = append(dirEntries, SRes{
 				File:           zf,
 				DirectoryEntry: entry,
 				Similarity:     getStrDest(title, query),
 			})
-			mx.Unlock()
 		}
 	})
 
