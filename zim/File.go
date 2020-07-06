@@ -14,7 +14,8 @@ import (
 // and a local assigned path
 type File struct {
 	*zim.File
-	Path string
+	Path      string
+	IndexFile string
 
 	// Use Mutex cause we can only
 	// have one routine reading

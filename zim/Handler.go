@@ -32,7 +32,7 @@ func NewZim(dir string) *Handler {
 }
 
 // Start starts the zimservice
-func (zs *Handler) Start() error {
+func (zs *Handler) Start(libPath string) error {
 
 	// Load all zimfiles in given directorys
 	if err := zs.loadFiles(); err != nil {
@@ -41,7 +41,7 @@ func (zs *Handler) Start() error {
 
 	log.Infof("Successfully loaded %d zim file(s)", len(zs.files))
 
-	return zs.GenerateIndex()
+	return zs.GenerateIndex(libPath)
 }
 
 // GetFiles in dir
@@ -55,7 +55,7 @@ func (zs *Handler) loadFiles() error {
 
 	filepath.Walk(zs.Dir, func(path string, info os.FileInfo, err error) error {
 		// Ignore non regular files
-		if !info.IsDir() && !strings.HasSuffix(path, ".ix") {
+		if !info.IsDir() && !strings.HasSuffix(path, ".ix") && !strings.HasSuffix(path, ".ix.db") {
 			// We want to use the real
 			// path ond disk
 			realPath := path
@@ -116,15 +116,34 @@ func (zs *Handler) FindWikiFile(zimFileID string) *File {
 }
 
 // GenerateIndex for search queries
-func (zs *Handler) GenerateIndex() error {
+func (zs *Handler) GenerateIndex(libPath string) error {
 	s := uint32(0)
+
+	indexDB, err := NewIndexDB(libPath)
+	if err != nil {
+		return err
+	}
 
 	// Create index for all files
 	for i := range zs.files {
 		fmt.Printf("\rIndexing %s", zs.files[i].Name())
 
+		// Set index file
+		zs.files[i].IndexFile = zs.files[i].Path + ".ix"
+
+		// Check file validation
+		ok, err := indexDB.CheckFile(zs.files[i].IndexFile)
+		if err != nil {
+			return err
+		}
+		// Skip file if index is still valid
+		if ok {
+			fmt.Printf("\rIndexing %s ...exists\n", zs.files[i].Name())
+			continue
+		}
+
 		// Create new Index file
-		f, err := os.OpenFile(zs.files[i].Path+".ix", os.O_CREATE|os.O_RDWR|os.O_TRUNC, 0600)
+		f, err := os.OpenFile(zs.files[i].IndexFile, os.O_CREATE|os.O_RDWR|os.O_TRUNC, 0600)
 		if err != nil {
 			return err
 		}
@@ -136,9 +155,19 @@ func (zs *Handler) GenerateIndex() error {
 		}
 
 		f.Close()
+
+		// Add index to DB
+		err = indexDB.AddIndexFile(zs.files[i].IndexFile)
+		if err != nil {
+			return err
+		}
+
 		s += size
 	}
 
-	fmt.Printf("Full index size: %dMB\n", s/1000/1000)
+	if s > 0 {
+		fmt.Printf("Full index size: %dMB\n", s/1000/1000)
+	}
+
 	return nil
 }

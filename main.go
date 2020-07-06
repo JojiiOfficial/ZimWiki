@@ -17,8 +17,10 @@ func main() {
 	setupLogger()
 
 	// TODO use os.Args
-	service := zim.NewZim("./library")
-	err := service.Start()
+	libPath := "./library"
+
+	service := zim.NewZim(libPath)
+	err := service.Start(libPath)
 	if err != nil {
 		log.Fatalln(err)
 		return
