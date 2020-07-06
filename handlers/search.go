@@ -15,11 +15,17 @@ import (
 
 func searchSingle(query string, wiki *zim.File) []zim.SRes {
 	// Search entries
-	entries := wiki.SearchForEntry(query, 100)
+	entries := wiki.SearchForEntry(query)
 	// Sort them by similarity
 	sort.Sort(sort.Reverse(zim.ByPercentage(entries)))
 
-	return entries
+	// Limit all results to 100
+	e := 100
+	if len(entries) < e {
+		e = len(entries)
+	}
+
+	return entries[:e]
 }
 
 // Search in all available wikis
@@ -35,7 +41,7 @@ func searchGlobal(query string, handler *zim.Handler) []zim.SRes {
 	for i := range files {
 		go func(index int) {
 			// Search
-			r := files[index].SearchForEntry(query, 100)
+			r := files[index].SearchForEntry(query)
 
 			// Append results
 			mx.Lock()
@@ -51,6 +57,7 @@ func searchGlobal(query string, handler *zim.Handler) []zim.SRes {
 	// Sort by similarity
 	sort.Sort(sort.Reverse(zim.ByPercentage(results)))
 
+	// Limit all results to 100
 	e := 100
 	if len(results) < e {
 		e = len(results)

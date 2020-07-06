@@ -1,11 +1,10 @@
 package zim
 
 import (
-	"runtime"
+	"hash/fnv"
 	"strings"
 	"sync"
 
-	"github.com/JojiiOfficial/gopool"
 	"github.com/agext/levenshtein"
 	"github.com/sirupsen/logrus"
 	"github.com/tim-st/go-zim"
@@ -39,24 +38,28 @@ func (a ByPercentage) Less(i, j int) bool {
 }
 
 // SearchForEntry in zim file
-func (zf *File) SearchForEntry(query string, limit int) []SRes {
-	zf.Mx.Lock()
-	res := zf.File.EntriesWithNamespace(zim.NamespaceArticles, int(zf.ArticleCount()))
-	zf.Mx.Unlock()
-
+func (zf *File) SearchForEntry(query string) []SRes {
 	mx := sync.Mutex{}
 	dirEntries := make([]SRes, 0)
 
-	gopool.New(len(res), runtime.NumCPU(), func(wg *sync.WaitGroup, pos, total, workerID int) interface{} {
-		entry := &res[pos]
+	type wasAdded = struct{}
+	alreadyAdded := make(map[uint32]wasAdded, 0)
+
+	zf.Mx.Lock()
+	zf.ForEachEntryWithURLPrefix(zim.NamespaceArticles, nil, int(zf.ArticleCount()), func(entry *zim.DirectoryEntry) {
 		if len(entry.Title()) == 0 {
-			return nil
+			return
 		}
+
+		var key = hash(entry.URL())
+		if _, ok := alreadyAdded[key]; ok {
+			return
+		}
+
 		title := string(entry.Title())
 
 		if strings.Contains(strings.ToLower(title), strings.ToLower(query)) {
 			// Follow redirect
-			zf.Mx.Lock()
 			if entry.IsRedirect() {
 				fl, err := zf.FollowRedirect(entry)
 				if err == nil {
@@ -64,8 +67,12 @@ func (zf *File) SearchForEntry(query string, limit int) []SRes {
 				} else {
 					logrus.Warn(err)
 				}
+
+				// Also add redirected to map
+				alreadyAdded[hash(entry.URL())] = wasAdded{}
 			}
-			zf.Mx.Unlock()
+
+			alreadyAdded[key] = wasAdded{}
 
 			mx.Lock()
 			dirEntries = append(dirEntries, SRes{
@@ -75,10 +82,9 @@ func (zf *File) SearchForEntry(query string, limit int) []SRes {
 			})
 			mx.Unlock()
 		}
+	})
 
-		return nil
-	}).Run().Wait()
-
+	zf.Mx.Unlock()
 	return dirEntries
 }
 
@@ -98,4 +104,10 @@ func getStrDest(a, b string) int {
 	}
 
 	return int(float32(levenshtein.Similarity(a, b, nil)))*100 + add
+}
+
+func hash(data []byte) uint32 {
+	h := fnv.New32a()
+	h.Write(data)
+	return h.Sum32()
 }
