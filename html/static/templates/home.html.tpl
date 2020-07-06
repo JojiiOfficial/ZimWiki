@@ -13,7 +13,7 @@
                 <div class="card mb-3 box-shadow shadow-sm" style="cursor:pointer" onclick="window.location.href='{{ .Link }}'">
                     <div class="card-body">
                         <div class="row">
-                            <div class="col-sm-4">
+                            <div class="col-sm-2">
                                 <img src="{{ .Image }}" style="width: 50px;height: auto;margin-right:10px">
                             </div>
                             <div class="col col-xxl-5">

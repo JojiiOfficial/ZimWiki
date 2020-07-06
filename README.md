@@ -44,6 +44,7 @@ Run the binary and go to `https://localhost:8080`
 - [x] Read/Handle multiple Zim files
 - [x] Read Wikis
 - [x] Search (inside a wiki or globally)
+- [x] Create wiki index files for faster search
 - [x] Send content gzipped
 - [x] Use symlinks as .zim link
 - [ ] Replace absolute links with relative ones
