@@ -90,8 +90,7 @@ func (indexDB *IndexDB) AddIndexFile(file string) error {
 	}
 
 	// If file still contains a dir, remove it
-	_, file = filepath.Split(file)
-	file = filepath.Join(indexDB.LibPath, file)
+	file = indexDB.addPathPrefix(file)
 
 	// Open file to index
 	f, err := os.OpenFile(file, os.O_RDONLY, 0600)
@@ -109,15 +108,14 @@ func (indexDB *IndexDB) AddIndexFile(file string) error {
 	// Add index
 	return indexDB.addIndex(IndexEntry{
 		Checksum:  sHash,
-		IndexFile: file,
+		IndexFile: removePathPrefix(file),
 	})
 }
 
 // CheckFile if it is in DB and the Checksum matches
 func (indexDB *IndexDB) CheckFile(file string) (bool, error) {
 	// If file still contains a dir, remove it
-	_, file = filepath.Split(file)
-	file = filepath.Join(indexDB.LibPath, file)
+	file = indexDB.addPathPrefix(file)
 
 	// Check if file is in DB
 	entry := indexDB.GetEntry(file)
@@ -144,7 +142,7 @@ func (indexDB *IndexDB) CheckFile(file string) (bool, error) {
 
 // GetEntry in IndexDB
 func (indexDB *IndexDB) GetEntry(file string) *IndexEntry {
-	_, file = filepath.Split(file)
+	file = removePathPrefix(file)
 	for i := range indexDB.Entries {
 		if indexDB.Entries[i].IndexFile == file {
 			return &indexDB.Entries[i]
@@ -163,4 +161,14 @@ func fileChecksum(f *os.File) (string, error) {
 	}
 	sHash := hex.EncodeToString(hash.Sum(nil))
 	return sHash, nil
+}
+
+func removePathPrefix(file string) string {
+	_, file = filepath.Split(file)
+	return file
+}
+
+func (indexDB IndexDB) addPathPrefix(file string) string {
+	file = removePathPrefix(file)
+	return filepath.Join(indexDB.LibPath, file)
 }
