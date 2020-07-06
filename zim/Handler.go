@@ -126,30 +126,34 @@ func (zs *Handler) GenerateIndex(libPath string) error {
 
 	// Create index for all files
 	for i := range zs.files {
-		fmt.Printf("\rIndexing %s", zs.files[i].Name())
+		file := &zs.files[i]
+
+		fmt.Printf("\rIndexing %s", file.Name())
 
 		// Set index file
-		zs.files[i].IndexFile = zs.files[i].Path + ".ix"
+		fdir, fname := filepath.Split(file.Path)
+		fname = "." + fname + ".ix"
+		file.IndexFile = filepath.Join(fdir, fname)
 
 		// Check file validation
-		ok, err := indexDB.CheckFile(zs.files[i].IndexFile)
+		ok, err := indexDB.CheckFile(file.IndexFile)
 		if err != nil {
 			return err
 		}
 		// Skip file if index is still valid
 		if ok {
-			fmt.Printf("\rIndexing %s ...exists\n", zs.files[i].Name())
+			fmt.Printf("\rIndexing %s ...exists\n", file.Name())
 			continue
 		}
 
 		// Create new Index file
-		f, err := os.OpenFile(zs.files[i].IndexFile, os.O_CREATE|os.O_RDWR|os.O_TRUNC, 0600)
+		f, err := os.OpenFile(file.IndexFile, os.O_CREATE|os.O_RDWR|os.O_TRUNC, 0600)
 		if err != nil {
 			return err
 		}
 
 		// Generate index
-		size, err := zs.files[i].generateFileIndex(f)
+		size, err := file.generateFileIndex(f)
 		if err != nil {
 			return err
 		}
@@ -157,7 +161,7 @@ func (zs *Handler) GenerateIndex(libPath string) error {
 		f.Close()
 
 		// Add index to DB
-		err = indexDB.AddIndexFile(zs.files[i].IndexFile)
+		err = indexDB.AddIndexFile(file.IndexFile)
 		if err != nil {
 			return err
 		}
