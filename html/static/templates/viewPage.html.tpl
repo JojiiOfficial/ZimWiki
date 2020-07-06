@@ -5,9 +5,13 @@
 
 {{/* Hide sidebar */}}
 <script>
-    setTimeout(function(){
-        $("#wrapper").toggleClass("toggled")
-    }, 50)
+    var width = (window.innerWidth > 0) ? window.innerWidth : screen.width;
+
+    if width > 1430 {
+        setTimeout(function(){
+            $("#wrapper").toggleClass("toggled")
+        }, 50)
+    }
 </script>
 
 {{ end }}
