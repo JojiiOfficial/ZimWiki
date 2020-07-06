@@ -1,7 +1,11 @@
 package zim
 
 import (
+	"fmt"
+	"io"
+	"strconv"
 	"sync"
+	"time"
 
 	"github.com/tim-st/go-zim"
 )
@@ -63,4 +67,61 @@ func (zf *File) GetInfos() *FileInfo {
 // GetID for zimfiles
 func (zf *File) GetID() string {
 	return zf.UUID().String()
+}
+
+// generateFileIndex for search
+func (zf *File) generateFileIndex(w io.Writer) (uint32, error) {
+
+	progress := uint32(0)
+	writtenBytes := uint32(0)
+	done := make(chan error, 1)
+
+	go func() {
+		// Loop through all entries
+		err := zf.ForEachEntryAfterPosition(0, 0, func(entry *zim.DirectoryEntry, pos uint32) error {
+			progress++
+
+			if entry.IsArticle() {
+				if len(entry.URL()) < 2 {
+					return nil
+				}
+
+				sPos := strconv.FormatUint(uint64(pos), 36)
+
+				// Build index entry
+				var data []byte
+				data = append(data, entry.URL()...)
+				data = append(data, byte('\n'))
+				data = append(data, []byte(sPos)...)
+				data = append(data, byte('\n'))
+
+				// Write data
+				n, err := w.Write(data)
+				if err != nil {
+					return err
+				}
+
+				writtenBytes += uint32(n)
+			}
+			return nil
+		})
+
+		done <- err
+	}()
+
+	// Print progress
+f:
+	for {
+		select {
+		case <-done:
+			fmt.Printf("\rIndexing %s ...done\n", zf.Name())
+			break f
+		case <-time.After(time.Second * 2):
+			if progress > 0 {
+				fmt.Printf("\rIndexing %s: %d%s", zf.Name(), progress*100/zf.ArticleCount(), "%")
+			}
+		}
+	}
+
+	return writtenBytes, nil
 }

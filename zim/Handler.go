@@ -1,8 +1,10 @@
 package zim
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 	"sync"
 
 	"github.com/pkg/errors"
@@ -31,6 +33,7 @@ func NewZim(dir string) *Handler {
 
 // Start starts the zimservice
 func (zs *Handler) Start() error {
+
 	// Load all zimfiles in given directorys
 	if err := zs.loadFiles(); err != nil {
 		return err
@@ -38,7 +41,7 @@ func (zs *Handler) Start() error {
 
 	log.Infof("Successfully loaded %d zim file(s)", len(zs.files))
 
-	return nil
+	return zs.GenerateIndex()
 }
 
 // GetFiles in dir
@@ -52,7 +55,10 @@ func (zs *Handler) loadFiles() error {
 
 	filepath.Walk(zs.Dir, func(path string, info os.FileInfo, err error) error {
 		// Ignore non regular files
-		if !info.IsDir() {
+		if !info.IsDir() && !strings.HasSuffix(path, ".ix") {
+			// We want to use the real
+			// path ond disk
+			realPath := path
 
 			// Follow sysmlinks
 			if info.Mode()&os.ModeSymlink == os.ModeSymlink {
@@ -75,7 +81,7 @@ func (zs *Handler) loadFiles() error {
 
 			zs.files = append(zs.files, File{
 				File: f,
-				Path: path,
+				Path: realPath,
 			})
 			success++
 		}
@@ -106,5 +112,33 @@ func (zs *Handler) FindWikiFile(zimFileID string) *File {
 		}
 	}
 
+	return nil
+}
+
+// GenerateIndex for search queries
+func (zs *Handler) GenerateIndex() error {
+	s := uint32(0)
+
+	// Create index for all files
+	for i := range zs.files {
+		fmt.Printf("\rIndexing %s", zs.files[i].Name())
+
+		// Create new Index file
+		f, err := os.OpenFile(zs.files[i].Path+".ix", os.O_CREATE|os.O_RDWR|os.O_TRUNC, 0600)
+		if err != nil {
+			return err
+		}
+
+		// Generate index
+		size, err := zs.files[i].generateFileIndex(f)
+		if err != nil {
+			return err
+		}
+
+		f.Close()
+		s += size
+	}
+
+	fmt.Printf("Full index size: %dMB\n", s/1000/1000)
 	return nil
 }
