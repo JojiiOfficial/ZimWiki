@@ -83,7 +83,7 @@ func parseWikiRequest(w http.ResponseWriter, r *http.Request, hd HandlerData) (*
 		z.Mx.Lock()
 		entry, _ = z.FollowRedirect(&entry)
 		z.Mx.Unlock()
-		http.Redirect(w, r, zim.GetRawWikiURL(z, entry), http.StatusNotFound)
+		http.Redirect(w, r, zim.GetRawWikiURL(z, entry), http.StatusMovedPermanently)
 		return nil, nil, nil, false
 	}
 
@@ -126,7 +126,7 @@ func WikiRaw(w http.ResponseWriter, r *http.Request, hd HandlerData) error {
 // WikiView sends a human friendly preview page for a WIKI site
 func WikiView(w http.ResponseWriter, r *http.Request, hd HandlerData) error {
 	// Find file and dirEntry
-	z, _, entry, success := parseWikiRequest(w, r, hd)
+	z, namespace, entry, success := parseWikiRequest(w, r, hd)
 	if !success {
 		// We already handled
 		// http errors & redirects
@@ -148,9 +148,10 @@ func WikiView(w http.ResponseWriter, r *http.Request, hd HandlerData) error {
 	w.Header().Set("Cache-Control", "max-age=31536000, public")
 
 	return serveTemplate(WikiPageTemplate, w, TemplateData{
-		FavIcon: favurl,
-		Favtype: favType,
-		Wiki:    z.GetID(),
+		FavIcon:   favurl,
+		Favtype:   favType,
+		Wiki:      z.GetID(),
+		Namespace: string(*namespace),
 		WikiViewTemplateData: WikiViewTemplateData{
 			Source: zim.GetRawWikiURL(z, *entry),
 		},

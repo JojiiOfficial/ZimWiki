@@ -142,7 +142,7 @@ func Search(w http.ResponseWriter, r *http.Request, hd HandlerData) error {
 	// Redirect to wiki page if only
 	// one search result was found
 	if len(results) == 1 {
-		http.Redirect(w, r, results[0].Link, http.StatusFound)
+		http.Redirect(w, r, results[0].Link, http.StatusMovedPermanently)
 		return nil
 	}
 

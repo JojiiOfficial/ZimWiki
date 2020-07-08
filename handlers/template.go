@@ -17,9 +17,10 @@ var (
 
 // TemplateData data for the base template
 type TemplateData struct {
-	Favtype string
-	FavIcon string
-	Wiki    string
+	Favtype   string
+	FavIcon   string
+	Wiki      string
+	Namespace string
 
 	HomeTemplateData
 	WikiViewTemplateData
@@ -83,7 +84,7 @@ func serveTemplate(tmpFile string, w http.ResponseWriter, btd TemplateData) erro
 		}
 
 		// Cache template
-		TemplateCache[tmplName] = tmpl
+		// TemplateCache[tmplName] = tmpl
 	}
 
 	if len(btd.Wiki) == 0 {
