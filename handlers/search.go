@@ -73,11 +73,21 @@ func Search(w http.ResponseWriter, r *http.Request, hd HandlerData) error {
 	if !ok {
 		return fmt.Errorf("Missing parameter")
 	}
+	var query string
 
-	// Get search query
-	query, ok := r.URL.Query()["q"]
-	if !ok || len(query) == 0 {
-		http.Redirect(w, r, "/", http.StatusUnprocessableEntity)
+	if r.Method == "GET" {
+		// Get GET search query
+		getQuery, ok := r.URL.Query()["q"]
+		if ok && len(getQuery) > 0 {
+			query = getQuery[0]
+		}
+	} else if r.Method == "POST" {
+		// Get Post search query
+		query = r.PostFormValue("sQuery")
+	}
+
+	if len(query) == 0 {
+		http.Redirect(w, r, "/", http.StatusMovedPermanently)
 		return nil
 	}
 
@@ -88,7 +98,7 @@ func Search(w http.ResponseWriter, r *http.Request, hd HandlerData) error {
 	if wiki == "-" {
 		source = "global search"
 
-		res = searchGlobal(query[0], hd.ZimService)
+		res = searchGlobal(query, hd.ZimService)
 	} else {
 		// Wiki search
 		z := hd.ZimService.FindWikiFile(wiki)
@@ -99,7 +109,7 @@ func Search(w http.ResponseWriter, r *http.Request, hd HandlerData) error {
 		source = z.File.Title()
 
 		// Search for query in WIKI
-		res = searchSingle(query[0], z)
+		res = searchSingle(query, z)
 	}
 
 	favCache := make(map[string]string)
@@ -140,7 +150,7 @@ func Search(w http.ResponseWriter, r *http.Request, hd HandlerData) error {
 		Wiki: wiki,
 		SearchTemplateData: SearchTemplateData{
 			Results:      results,
-			QueryText:    query[0],
+			QueryText:    query,
 			SearchSource: source,
 		},
 	})

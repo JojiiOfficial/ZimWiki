@@ -18,9 +18,17 @@ import (
 // Route defining a route
 type Route struct {
 	Name        string
-	Method      HTTPMethod
+	Methods     []HTTPMethod
 	Pattern     string
 	HandlerFunc RouteFunction
+}
+
+func (r Route) getMethods() []string {
+	methods := make([]string, len(r.Methods))
+	for i := range r.Methods {
+		methods[i] = string(r.Methods[i])
+	}
+	return methods
 }
 
 // HTTPMethod http method. GET, POST, DELETE, HEADER, etc...
@@ -48,13 +56,13 @@ var (
 		{
 			Name:        "IndexRoot",
 			Pattern:     "/",
-			Method:      GetMethod,
+			Methods:     []HTTPMethod{GetMethod},
 			HandlerFunc: handlers.Index,
 		},
 		{
 			Name:        "IndexHtml",
 			Pattern:     "/index.html",
-			Method:      GetMethod,
+			Methods:     []HTTPMethod{GetMethod},
 			HandlerFunc: handlers.Index,
 		},
 
@@ -63,14 +71,14 @@ var (
 		{
 			Name:        "",
 			Pattern:     "/assets/{type}/{file}",
-			Method:      GetMethod,
+			Methods:     []HTTPMethod{GetMethod},
 			HandlerFunc: handlers.Assets,
 		},
 
 		{
 			Name:        "Search",
-			Pattern:     "/search/{wiki}",
-			Method:      GetMethod,
+			Pattern:     "/search/{wiki}/",
+			Methods:     []HTTPMethod{GetMethod, POSTMethod},
 			HandlerFunc: handlers.Search,
 		},
 	}
@@ -81,14 +89,14 @@ var (
 	// Raw wiki page
 	wikiRaw = Route{
 		Name:        "",
-		Method:      GetMethod,
+		Methods:     []HTTPMethod{GetMethod},
 		HandlerFunc: handlers.WikiRaw,
 	}
 
 	// Raw wiki page
 	wikiView = Route{
 		Name:        "WikiView",
-		Method:      GetMethod,
+		Methods:     []HTTPMethod{GetMethod},
 		HandlerFunc: handlers.WikiView,
 	}
 )
@@ -102,20 +110,20 @@ func NewRouter(zimService *zim.Handler) *mux.Router {
 	router := mux.NewRouter().StrictSlash(true)
 	for _, route := range globalRoutes {
 		router.
-			Methods(string(route.Method)).
+			Methods(route.getMethods()...).
 			Path(route.Pattern).
 			Name(route.Name).
 			Handler(RouteHandler(route.HandlerFunc, route.Name, hd))
 	}
 
 	// Add view handler
-	router.Methods(string(wikiView.Method)).
+	router.Methods(wikiView.getMethods()...).
 		PathPrefix("/wiki/view/").
 		Name(wikiView.Name).
 		Handler(RouteHandler(wikiView.HandlerFunc, wikiView.Name, hd))
 
 	// Add raw handler
-	router.Methods(string(wikiRaw.Method)).
+	router.Methods(wikiRaw.getMethods()...).
 		PathPrefix("/wiki/raw/").
 		Name(wikiRaw.Name).
 		Handler(RouteHandler(wikiRaw.HandlerFunc, wikiRaw.Name, hd))

@@ -38,14 +38,17 @@
                     <div class="col-2 col-xl-2"><a class="btn btn-link" role="button" id="menu-toggle" href="#menu-toggle"><i class="fa fa-bars"></i></a></div>
                     <div class="col justify-content-xl-start">
                         <div style="max-width: 300px;float:right">
-                            <div class="input-group">
-                                <input class="bg-light form-control border-0 small" type="text" id="searchtxt" onkeydown="enterSearch(this)"  placeholder="Search">
-                                <div class="input-group-append">
-                                    <button class="btn btn-primary py-0" type="button" onclick='search(document.getElementById("searchtxt").value)'>
-                                        <i class="fas fa-search"></i>
-                                    </button>
+                            <form method="POST" id="searchform">
+                                <input type="hidden" id="sQuery"name="sQuery">
+                                <div class="input-group">
+                                    <input class="bg-light form-control border-0 small" type="text" id="searchtxt" onkeydown="enterSearch(this)"  placeholder="Search">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-primary py-0" type="button" onclick='search(document.getElementById("searchtxt").value)'>
+                                            <i class="fas fa-search"></i>
+                                        </button>
+                                    </div>
                                 </div>
-                            </div>
+                            </form>
                         </div>
                     </div>
                 </div>
