@@ -129,6 +129,13 @@ func Search(w http.ResponseWriter, r *http.Request, hd HandlerData) error {
 
 	log.Info("Searching took ", time.Since(start))
 
+	// Redirect to wiki page if only
+	// one search result was found
+	if len(results) == 1 {
+		http.Redirect(w, r, results[0].Link, http.StatusFound)
+		return nil
+	}
+
 	return serveTemplate(SearchTemplate, w, TemplateData{
 		Wiki: wiki,
 		SearchTemplateData: SearchTemplateData{
