@@ -6,11 +6,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
 <script>
-// Don't toggle sidebar on small devices, since it would open it
-if (width > 1430) {
-   
-}
-
 function fixURLs(){
 	// Get contents of the iframe
     var wikiContent = $("#wikiContent").contents();

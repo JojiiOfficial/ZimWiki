@@ -156,11 +156,16 @@ func WikiView(w http.ResponseWriter, r *http.Request, hd HandlerData) error {
 	// Cache files
 	w.Header().Set("Cache-Control", "max-age=31536000, public")
 
+	wrapperClass := "toggled"
+	if isMobileUseragent(r.UserAgent()) {
+		wrapperClass = ""
+	}
+
 	return serveTemplate(WikiPageTemplate, w, TemplateData{
 		FavIcon:      favurl,
 		Favtype:      favType,
 		Wiki:         z.GetID(),
-		WrapperClass: "toggled",
+		WrapperClass: wrapperClass,
 		Namespace:    string(*namespace),
 		WikiViewTemplateData: WikiViewTemplateData{
 			Source: zim.GetRawWikiURL(z, *entry),
