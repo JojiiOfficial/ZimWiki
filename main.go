@@ -16,11 +16,25 @@ import (
 func main() {
 	setupLogger()
 
-	// TODO use os.Args
 	libPath := "./library"
 
-	service := zim.NewZim(libPath)
-	err := service.Start(libPath)
+	if len(os.Args) > 1 {
+		libPath = os.Args[1]
+	}
+
+	// Verify library path
+	s, err := os.Stat(libPath)
+	if err != nil {
+		log.Errorf("Can't use '%s' as library path. %s", libPath, err)
+		return
+	}
+	if !s.IsDir() {
+		log.Error("Library must be a path!")
+		return
+	}
+
+	service := zim.New(libPath)
+	err = service.Start(libPath)
 	if err != nil {
 		log.Fatalln(err)
 		return

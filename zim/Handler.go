@@ -23,8 +23,8 @@ type Handler struct {
 	Mx sync.Mutex
 }
 
-// NewZim create a new zimservice
-func NewZim(dir string) *Handler {
+// New create a new zimservice
+func New(dir string) *Handler {
 	return &Handler{
 		Dir:       dir,
 		fileCache: make(map[string]*File),

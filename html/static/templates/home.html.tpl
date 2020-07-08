@@ -7,6 +7,9 @@
 <div class="container-fluid" id="ContentContainer" style="margin-top: 18px;">
     <div class="row float-none d-xl-flex justify-content-xl-center align-items-xl-center">
 
+        {{/* Display message if no wiki was found */}}
+        {{if not .Cards}} Nothing here yet {{end}}
+
         {{/* Add all available cards */}}
         {{ range .Cards }}
             <div class="col-xl-5" style="max-width:600px">
