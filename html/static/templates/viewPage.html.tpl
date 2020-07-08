@@ -20,28 +20,31 @@ function fixURLs(){
 
     // Replace all links to preview links
     wikiContent.find("a").each(function(){
-       var oldLink = $(this).attr("href");
-       if (oldLink === undefined){
+        var oldLink = $(this).attr("href");
+        if (oldLink === undefined){
             return
-       }
-       var newLinkBase = "/wiki/view/"+wiki+"/"+namespace+"/"
-	   var newlink = newLinkBase + oldLink+"/";
-	   
-       if (oldLink.startsWith("http")){
-			// If link is a full URL, follow it.
-			newlink = oldLink;
-	   } else if (oldLink.startsWith("/") && !oldLink.startsWith("/wiki/view/"+wiki)){
+        }
+        var newLinkBase = "/wiki/view/"+wiki+"/"+namespace+"/"
+        var newlink = newLinkBase + oldLink+"/";
+
+        if (oldLink.startsWith("http")){
+            // If link is a full URL, follow it.
+            newlink = oldLink;
+        } else if (oldLink.startsWith("/") && !oldLink.startsWith("/wiki/view/"+wiki)){
             var url = oldLink;
             if (url.endsWith("/")){
                 url = url.substr(0, url.length-1);
             }
 
-		    var splitURL = url.split("/");
-			newlink = newLinkBase+splitURL[splitURL.length-1];
-	   }
+            var splitURL = url.split("/");
+            newlink = newLinkBase+splitURL[splitURL.length-1];
+        } else if (oldLink.startsWith("#") && oldLink.length > 1 ){
+            // If pages are only jumpTo's keep them
+            newlink = window.location.href+oldLink;
+        }
 
-	   // Set new href
-       $(this).attr("href", newlink)
+        // Set new href
+        $(this).attr("href", newlink)
     })
 
     // Scroll to object if url ends with '#<id>'

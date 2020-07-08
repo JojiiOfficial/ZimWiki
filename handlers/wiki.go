@@ -127,7 +127,6 @@ func WikiRaw(w http.ResponseWriter, r *http.Request, hd HandlerData) error {
 	w.Header().Set("Cache-Control", "max-age=31536000, public")
 
 	// Send raw file
-	// TODO replace absolute links
 	buff := make([]byte, 1024*1024)
 	_, err = io.CopyBuffer(w, blobReader, buff)
 	return err
