@@ -43,6 +43,17 @@ function fixURLs(){
 	   // Set new href
        $(this).attr("href", newlink)
     })
+
+    // Scroll to object if url ends with '#<id>'
+    if (window.location.href.includes("#")){
+        var url = window.location.href;
+        if (url.endsWith("/")){
+            url = url.substr(0, url.length-1);
+        }
+        var elemID = url.substr(url.lastIndexOf("#")+1, url.length);
+        var elem = wikiContent.find("#"+elemID);
+        wikiContent.scrollTop(elem.offset().top);
+    }
 }
 </script>
 
