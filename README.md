@@ -47,5 +47,5 @@ Run the binary and go to `https://localhost:8080`
 - [x] Create wiki index files for faster search
 - [x] Send content gzipped
 - [x] Use symlinks as .zim link
-- [ ] Replace absolute links with relative ones
+- [x] Replace absolute links with relative ones
 - [ ] Config file
