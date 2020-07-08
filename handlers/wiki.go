@@ -83,7 +83,17 @@ func parseWikiRequest(w http.ResponseWriter, r *http.Request, hd HandlerData) (*
 		z.Mx.Lock()
 		entry, _ = z.FollowRedirect(&entry)
 		z.Mx.Unlock()
-		http.Redirect(w, r, zim.GetRawWikiURL(z, entry), http.StatusMovedPermanently)
+
+		// Use preview url if
+		// entry is article
+		var destURL string
+		if entry.IsArticle() {
+			destURL = zim.GetWikiURL(z, entry)
+		} else {
+			destURL = zim.GetRawWikiURL(z, entry)
+		}
+
+		http.Redirect(w, r, destURL, http.StatusMovedPermanently)
 		return nil, nil, nil, false
 	}
 
@@ -148,10 +158,11 @@ func WikiView(w http.ResponseWriter, r *http.Request, hd HandlerData) error {
 	w.Header().Set("Cache-Control", "max-age=31536000, public")
 
 	return serveTemplate(WikiPageTemplate, w, TemplateData{
-		FavIcon:   favurl,
-		Favtype:   favType,
-		Wiki:      z.GetID(),
-		Namespace: string(*namespace),
+		FavIcon:      favurl,
+		Favtype:      favType,
+		Wiki:         z.GetID(),
+		WrapperClass: "toggled",
+		Namespace:    string(*namespace),
 		WikiViewTemplateData: WikiViewTemplateData{
 			Source: zim.GetRawWikiURL(z, *entry),
 		},

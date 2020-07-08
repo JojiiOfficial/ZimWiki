@@ -8,9 +8,7 @@
 <script>
 // Don't toggle sidebar on small devices, since it would open it
 if (width > 1430) {
-    setTimeout(function(){
-        $("#wrapper").toggleClass("toggled")
-    }, 50)
+   
 }
 
 function fixURLs(){

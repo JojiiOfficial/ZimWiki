@@ -17,10 +17,11 @@ var (
 
 // TemplateData data for the base template
 type TemplateData struct {
-	Favtype   string
-	FavIcon   string
-	Wiki      string
-	Namespace string
+	Favtype      string
+	FavIcon      string
+	Wiki         string
+	Namespace    string
+	WrapperClass string
 
 	HomeTemplateData
 	WikiViewTemplateData
