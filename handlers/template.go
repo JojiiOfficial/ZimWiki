@@ -85,7 +85,7 @@ func serveTemplate(tmpFile string, w http.ResponseWriter, btd TemplateData) erro
 		}
 
 		// Cache template
-		TemplateCache[tmplName] = tmpl
+		// TemplateCache[tmplName] = tmpl
 	}
 
 	if len(btd.Wiki) == 0 {

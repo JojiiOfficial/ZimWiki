@@ -41,7 +41,28 @@ function fixURLs(){
         } else if (oldLink.startsWith("#") && oldLink.length > 1 ){
             // If pages are only jumpTo's keep them
             newlink = window.location.href+oldLink;
+        } else if (oldLink.startsWith("../") && oldLink.length > 1){
+            var goback = countInstances(oldLink,"../");
+            if (goback != 0){
+                var url = window.location.href;
+                if (url.endsWith("/")){
+                    url = url.substr(0, url.length-1);
+                }
+
+                var splitURL = url.split("/");
+                var nurl = splitURL.slice(0,splitURL.length-1-goback).join("/");
+                if (!nurl.endsWith("/")){
+                    nurl += "/";
+                }
+                nurl += oldLink.substr(3*goback,oldLink.length-1);
+                newlink = nurl;
+            }
+        } 
+        
+        if (newlink.startsWith("./")){
+            newlink = newlink.substr(2);
         }
+        newlink = newlink.replace("./","/");
 
         // Set new href
         $(this).attr("href", newlink)
@@ -57,6 +78,10 @@ function fixURLs(){
         var elem = wikiContent.find("#"+elemID);
         wikiContent.scrollTop(elem.offset().top);
     }
+}
+
+function countInstances(string, word) {
+   return string.split(word).length - 1;
 }
 </script>
 
