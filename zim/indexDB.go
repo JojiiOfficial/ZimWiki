@@ -9,6 +9,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"sync"
 )
 
 const dbFileName = ".ix.db"
@@ -20,9 +21,12 @@ var (
 
 // IndexDB a full db of index entries
 type IndexDB struct {
-	File    string       `json:"-"`
-	LibPath string       `json:"-"`
-	Entries []IndexEntry `json:"ies"`
+	File      string       `json:"-"`
+	LibPath   string       `json:"-"`
+	HighestID uint         `json:"hid"`
+	Entries   []IndexEntry `json:"ies"`
+
+	mx sync.Mutex
 }
 
 // IndexEntry represents an
@@ -32,6 +36,7 @@ type IndexEntry struct {
 	IndexFile string `json:"if"`
 	Checksum  string `json:"cs"`
 	WikiID    string `json:"wid"`
+	UniqueID  uint   `json:"uid"`
 }
 
 // NewIndexDB read indexDB from file or create a new one
@@ -106,11 +111,18 @@ func (indexDB *IndexDB) AddIndexFile(file, wikiID string) error {
 		return err
 	}
 
+	indexDB.mx.Lock()
+	// Increment highest ID
+	uid := indexDB.HighestID + 1
+	indexDB.HighestID = uid
+	indexDB.mx.Unlock()
+
 	// Add index
 	return indexDB.addIndex(IndexEntry{
 		Checksum:  sHash,
 		IndexFile: removePathPrefix(file),
 		WikiID:    wikiID,
+		UniqueID:  uid,
 	})
 }
 
@@ -177,7 +189,7 @@ func removePathPrefix(file string) string {
 	return file
 }
 
-func (indexDB IndexDB) addPathPrefix(file string) string {
+func (indexDB *IndexDB) addPathPrefix(file string) string {
 	file = removePathPrefix(file)
 	return filepath.Join(indexDB.LibPath, file)
 }

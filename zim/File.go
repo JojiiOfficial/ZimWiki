@@ -88,9 +88,9 @@ func (zf *File) generateFileIndex(w io.Writer) (uint32, error) {
 		err := zf.ForEachEntryAfterPosition(0, 0, func(entry *zim.DirectoryEntry, pos uint32) error {
 			progress++
 
-			// Continue
 			if !wasInArticles {
 				if entry.Namespace() != zim.NamespaceArticles {
+					// Continue
 					return nil
 				}
 
