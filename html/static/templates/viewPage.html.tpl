@@ -19,7 +19,19 @@ function fixURLs(){
         if (oldLink === undefined){
             return
         }
+
         var newLinkBase = "/wiki/view/"+wiki+"/"+namespace+"/"
+
+        // Append subfolders
+        var url = window.location.href;
+        if (url.endsWith("/")){
+            url = url.substr(0, url.length-1);
+        }
+        var surl = url.split("/").slice(2);
+        if (surl.length > 6){
+            newLinkBase += surl.slice(5, surl.length-1).join("/")+"/";
+        }
+
         var newlink = newLinkBase + oldLink+"/";
 
         if (oldLink.startsWith("http")){
