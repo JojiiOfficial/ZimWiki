@@ -31,6 +31,7 @@ type IndexDB struct {
 type IndexEntry struct {
 	IndexFile string `json:"if"`
 	Checksum  string `json:"cs"`
+	WikiID    string `json:"wid"`
 }
 
 // NewIndexDB read indexDB from file or create a new one
@@ -84,7 +85,7 @@ func (indexDB *IndexDB) addIndex(entry IndexEntry) error {
 }
 
 // AddIndexFile to DB. Calculates checksum automatically
-func (indexDB *IndexDB) AddIndexFile(file string) error {
+func (indexDB *IndexDB) AddIndexFile(file, wikiID string) error {
 	if indexDB.GetEntry(file) != nil {
 		return ErrAlreadyInDB
 	}
@@ -95,7 +96,7 @@ func (indexDB *IndexDB) AddIndexFile(file string) error {
 	// Open file to index
 	f, err := os.OpenFile(file, os.O_RDONLY, 0600)
 	defer f.Close()
-	if err != nil {
+	if err != nil && !os.IsNotExist(err) {
 		return err
 	}
 
@@ -109,6 +110,7 @@ func (indexDB *IndexDB) AddIndexFile(file string) error {
 	return indexDB.addIndex(IndexEntry{
 		Checksum:  sHash,
 		IndexFile: removePathPrefix(file),
+		WikiID:    wikiID,
 	})
 }
 
@@ -128,7 +130,7 @@ func (indexDB *IndexDB) CheckFile(file string) (bool, error) {
 	defer f.Close()
 	if err != nil {
 		if os.IsNotExist(err) {
-			return false, nil
+			return true, nil
 		}
 		return false, err
 	}
@@ -156,6 +158,10 @@ func (indexDB *IndexDB) GetEntry(file string) *IndexEntry {
 }
 
 func fileChecksum(f *os.File) (string, error) {
+	if f == nil {
+		return "", nil
+	}
+
 	hash := crc32.NewIEEE()
 	buff := make([]byte, 1024*1024)
 	_, err := io.CopyBuffer(hash, f, buff)

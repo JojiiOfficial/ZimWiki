@@ -41,7 +41,15 @@ func (zs *Handler) Start(libPath string) error {
 
 	log.Infof("Successfully loaded %d zim file(s)", len(zs.files))
 
-	return zs.GenerateIndex(libPath)
+	// TODO add bleve indexing
+
+	// Set to true for bleve indexing
+	err := zs.GenerateIndex(libPath, false)
+	if err == nil {
+		log.Info("Indexing successful")
+	}
+
+	return err
 }
 
 // GetFiles in dir
@@ -116,7 +124,7 @@ func (zs *Handler) FindWikiFile(zimFileID string) *File {
 }
 
 // GenerateIndex for search queries
-func (zs *Handler) GenerateIndex(libPath string) error {
+func (zs *Handler) GenerateIndex(libPath string, skipIndexing bool) error {
 	s := uint32(0)
 
 	indexDB, err := NewIndexDB(libPath)
@@ -128,7 +136,7 @@ func (zs *Handler) GenerateIndex(libPath string) error {
 	for i := range zs.files {
 		file := &zs.files[i]
 
-		fmt.Printf("\rIndexing %s", file.Name())
+		fmt.Printf("\rIndexing %s", file.Filename())
 
 		// Set index file
 		fdir, fname := filepath.Split(file.Path)
@@ -146,23 +154,31 @@ func (zs *Handler) GenerateIndex(libPath string) error {
 			continue
 		}
 
-		// Create new Index file
-		f, err := os.OpenFile(file.IndexFile, os.O_CREATE|os.O_RDWR|os.O_TRUNC, 0600)
-		if err != nil {
-			return err
-		}
+		var size uint32
+		if !skipIndexing {
+			// Create new Index file
+			f, err := os.OpenFile(file.IndexFile, os.O_CREATE|os.O_RDWR|os.O_TRUNC, 0600)
+			if err != nil {
+				return err
+			}
 
-		// Generate index
-		size, err := file.generateFileIndex(f)
-		if err != nil {
-			return err
-		}
+			// Generate index
+			size, err = file.generateFileIndex(f)
+			if err != nil {
+				return err
+			}
 
-		f.Close()
+			f.Close()
+		} else {
+			fmt.Println("\rSkipping Index", file.Filename())
+		}
 
 		// Add index to DB
-		err = indexDB.AddIndexFile(file.IndexFile)
+		err = indexDB.AddIndexFile(file.IndexFile, file.GetID())
 		if err != nil {
+			if err == ErrAlreadyInDB {
+				continue
+			}
 			return err
 		}
 
@@ -170,7 +186,7 @@ func (zs *Handler) GenerateIndex(libPath string) error {
 	}
 
 	if s > 0 {
-		fmt.Printf("Full index size: %dMB\n", s/1000/1000)
+		fmt.Printf("Generated index size: %dMB\n", s/1000/1000)
 	}
 
 	return nil

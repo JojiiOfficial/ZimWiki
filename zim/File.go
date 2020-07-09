@@ -139,11 +139,11 @@ f:
 				return 0, err
 			}
 
-			fmt.Printf("\rIndexing %s ...done\n", zf.Name())
+			fmt.Printf("\rIndexing %s ...done\n", zf.Filename())
 			break f
 		case <-time.After(time.Second * 2):
 			if progress > 0 {
-				fmt.Printf("\rIndexing %s: %d%s", zf.Name(), progress*100/zf.ArticleCount(), "%")
+				fmt.Printf("\rIndexing %s: %d%s", zf.Filename(), progress*100/zf.ArticleCount(), "%")
 			}
 		}
 	}
