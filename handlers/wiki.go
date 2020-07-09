@@ -10,7 +10,7 @@ import (
 	gzim "github.com/tim-st/go-zim"
 )
 
-func parseWikiRequest(w http.ResponseWriter, r *http.Request, hd HandlerData) (*zim.File, *gzim.Namespace, *gzim.DirectoryEntry, bool) {
+func parseWikiRequest(w http.ResponseWriter, r *http.Request, hd HandlerData, isRedirect bool) (*zim.File, *gzim.Namespace, *gzim.DirectoryEntry, bool) {
 	sPath := strings.Split(parseURLPath(r.URL), "/")
 
 	var reqWikiID string
@@ -74,6 +74,26 @@ func parseWikiRequest(w http.ResponseWriter, r *http.Request, hd HandlerData) (*
 	entry, _, found := z.EntryWithURL(namespace, []byte(reqFileURL))
 	z.Mx.Unlock()
 	if !found {
+
+		// Only try to find match
+		// if not already redirected
+		if !isRedirect {
+			var useAltURL bool
+
+			// Try to add/remove plural suffix
+			if strings.HasSuffix(reqFileURL, "s") {
+				useAltURL = true
+				r.URL.Path = r.URL.Path[:len(r.URL.Path)-1]
+			} else {
+				useAltURL = true
+				r.URL.Path = r.URL.Path + "s"
+			}
+
+			if useAltURL {
+				return parseWikiRequest(w, r, hd, true)
+			}
+		}
+
 		http.NotFound(w, r)
 		return nil, nil, nil, false
 	}
@@ -103,7 +123,7 @@ func parseWikiRequest(w http.ResponseWriter, r *http.Request, hd HandlerData) (*
 // WikiRaw handle direct wiki requests, without embedding into the webUI
 func WikiRaw(w http.ResponseWriter, r *http.Request, hd HandlerData) error {
 	// Find file and dirEntry
-	z, _, entry, success := parseWikiRequest(w, r, hd)
+	z, _, entry, success := parseWikiRequest(w, r, hd, false)
 	if !success {
 		// We already handled
 		// http errors & redirects
@@ -135,7 +155,7 @@ func WikiRaw(w http.ResponseWriter, r *http.Request, hd HandlerData) error {
 // WikiView sends a human friendly preview page for a WIKI site
 func WikiView(w http.ResponseWriter, r *http.Request, hd HandlerData) error {
 	// Find file and dirEntry
-	z, namespace, entry, success := parseWikiRequest(w, r, hd)
+	z, namespace, entry, success := parseWikiRequest(w, r, hd, false)
 	if !success {
 		// We already handled
 		// http errors & redirects
