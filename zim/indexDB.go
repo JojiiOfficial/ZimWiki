@@ -127,6 +127,9 @@ func (indexDB *IndexDB) CheckFile(file string) (bool, error) {
 	f, err := os.OpenFile(file, os.O_RDONLY, 0600)
 	defer f.Close()
 	if err != nil {
+		if os.IsNotExist(err) {
+			return false, nil
+		}
 		return false, err
 	}
 
