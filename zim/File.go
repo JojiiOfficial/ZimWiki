@@ -1,6 +1,7 @@
 package zim
 
 import (
+	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -78,10 +79,28 @@ func (zf *File) generateFileIndex(w io.Writer) (uint32, error) {
 	writtenBytes := uint32(0)
 	done := make(chan error, 1)
 
+	stoppedErr := errors.New("stopped")
+
 	go func() {
+		wasInArticles := false
+
 		// Loop through all entries
 		err := zf.ForEachEntryAfterPosition(0, 0, func(entry *zim.DirectoryEntry, pos uint32) error {
 			progress++
+
+			// Continue
+			if !wasInArticles {
+				if entry.Namespace() != zim.NamespaceArticles {
+					return nil
+				}
+
+				wasInArticles = true
+			}
+
+			// Break on namespace change
+			if entry.Namespace() != zim.NamespaceArticles && wasInArticles {
+				return stoppedErr
+			}
 
 			if entry.IsArticle() {
 				if len(entry.URL()) < 2 {
@@ -115,7 +134,11 @@ func (zf *File) generateFileIndex(w io.Writer) (uint32, error) {
 f:
 	for {
 		select {
-		case <-done:
+		case err := <-done:
+			if err != nil && err != stoppedErr {
+				return 0, err
+			}
+
 			fmt.Printf("\rIndexing %s ...done\n", zf.Name())
 			break f
 		case <-time.After(time.Second * 2):

@@ -142,7 +142,7 @@ func (zs *Handler) GenerateIndex(libPath string) error {
 		}
 		// Skip file if index is still valid
 		if ok {
-			fmt.Printf("\rIndexing %s ...exists\n", file.Name())
+			fmt.Printf("\rIndexing %s ...exists\n", file.Filename())
 			continue
 		}
 
