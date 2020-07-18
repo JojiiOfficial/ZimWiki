@@ -5,8 +5,8 @@ build:
 default: build
 
 upgrade:
-	go mod download
 	go get -u -v
+	go mod download
 	go mod tidy
 	go mod verify
 
@@ -15,6 +15,12 @@ test:
 
 man: build
 	./zimwiki --help-man | man -l -
+
+run:
+	./zimwiki
+
+debug: build
+	./zimwiki
 
 install:
 	@if ! test -f zimwiki;then echo 'run "make build" first'; exit 1; fi

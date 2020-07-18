@@ -1,7 +1,5 @@
 github.com/JojiiOfficial/gaw v1.2.8 h1:crLd2hrRvTlCClZDtwqnr8AoVKs3uQAk8B2AdOfUCsg=
 github.com/JojiiOfficial/gaw v1.2.8/go.mod h1:fPm2wG1z8xSCmfkqq9V5iHdlgLUpkRx73tSO9efhJP0=
-github.com/JojiiOfficial/go-zim v0.0.3 h1:T3/FvkhEVVY4OKecKrntRDx3YNabCqpQEBRaoigLmrU=
-github.com/JojiiOfficial/go-zim v0.0.3/go.mod h1:MDhR/3N7UdpHZCT18hcN4kqD1hdSttPKFehkyUYjPWc=
 github.com/JojiiOfficial/go-zim v0.0.4 h1:tBEb83MgG1XdF3A343JVsje29/rPvJEVzfcymgCAjT4=
 github.com/JojiiOfficial/go-zim v0.0.4/go.mod h1:MDhR/3N7UdpHZCT18hcN4kqD1hdSttPKFehkyUYjPWc=
 github.com/agext/levenshtein v1.2.3 h1:YB2fHEn0UJagG8T1rrWknE3ZQzWM06O8AMAatNn7lmo=
