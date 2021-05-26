@@ -1,5 +1,5 @@
 # ZimServer
-A modern zim fileserver which can handle multiple zim files by serving a beautiful Wiki website. It is a lightweight and performant relpacement for kiwix-serve and can handle many big wiki archives (zim files).
+A modern zim fileserver which can handle multiple zim files by serving a beautiful Wiki website. It is a lightweight and performant replacement for kiwix-serve and can handle many big wiki archives (zim files).
 
 # Screenshots
 <table>
