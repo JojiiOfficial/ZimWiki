@@ -2,7 +2,7 @@ module git.jojii.de/jojii/zimserver
 
 go 1.14
 
-replace github.com/tim-st/go-zim v0.1.2 => github.com/JojiiOfficial/go-zim v0.0.4
+replace github.com/tim-st/go-zim v0.1.2 => github.com/JojiiOfficial/go-zim v0.1.2
 
 require (
 	github.com/JojiiOfficial/gaw v1.2.8
