@@ -11,12 +11,23 @@ import (
 
 	"git.jojii.de/jojii/zimserver/zim"
 	log "github.com/sirupsen/logrus"
+	"github.com/pelletier/go-toml"
 )
 
 func main() {
 	setupLogger()
 
-	libPath := "./library"
+	config, err := toml.LoadFile("config.toml")
+
+	// If the configuration file does not exist, return an error
+	if err != nil {
+		log.Error(err)
+	} 
+	
+	// Define the variables retrieved from the configration file
+	configTree := config.Get("Config").(*toml.Tree)
+	libPath := configTree.Get("LibraryPath").(string)
+	port := configTree.Get("Port").(string)
 
 	if len(os.Args) > 1 {
 		libPath = os.Args[1]
@@ -40,12 +51,12 @@ func main() {
 		return
 	}
 
-	startServer(service)
+	startServer(service, port)
 }
 
-func startServer(zimService *zim.Handler) {
+func startServer(zimService *zim.Handler, port string) {
 	router := NewRouter(zimService)
-	server := createServer(router)
+	server := createServer(router, port)
 
 	// Start server
 	go func() {
@@ -60,9 +71,9 @@ func startServer(zimService *zim.Handler) {
 }
 
 // Build a new Http server
-func createServer(router http.Handler) http.Server {
+func createServer(router http.Handler, port string) http.Server {
 	return http.Server{
-		Addr:    ":8080",
+		Addr:    port,
 		Handler: router,
 	}
 }
