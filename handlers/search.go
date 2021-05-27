@@ -7,7 +7,7 @@ import (
 	"sync"
 	"time"
 
-	"git.jojii.de/jojii/zimserver/zim"
+	"git.jojii.de/jojii/ZimWiki/zim"
 	"github.com/gorilla/mux"
 
 	log "github.com/sirupsen/logrus"

@@ -9,7 +9,7 @@ import (
 	"syscall"
 	"time"
 
-	"git.jojii.de/jojii/zimserver/zim"
+	"git.jojii.de/jojii/ZimWiki/zim"
 	log "github.com/sirupsen/logrus"
 )
 
