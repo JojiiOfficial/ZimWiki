@@ -1,5 +1,3 @@
-$("#menu-toggle").click((function(e){e.preventDefault(),$("#wrapper").toggleClass("toggled")}));
-
 function enterSearch(ele){
 	if (event.key === 'Enter'){
 		search(ele.value)
@@ -10,7 +8,8 @@ function search(text) {
 	searchForm = document.getElementById("searchform")
 	queryData = document.getElementById("sQuery")
 
-	$("#searchform").attr("action","/search/"+wiki+"/");
+	document.querySelector("#searchform").setAttribute("action","/search/"+wiki+"/");
+
 	queryData.value = text
 
 	searchForm.submit()
