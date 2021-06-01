@@ -7,7 +7,7 @@
     <title>ZimWiki</title>
     <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
     <link rel="stylesheet" href="/assets/css/forkawesome.min.css">
-    <link rel="stylesheet" href="/assets/css/styles.min.css">
+    <link rel="stylesheet" href="/assets/css/styles.css">
     <script src="/assets/js/script.js"></script>
     <link rel="shortcut icon" type="{{ .Favtype }}" href="{{ .FavIcon }}">
     <script>
@@ -19,34 +19,31 @@
 <body>
     <div class="container py-3">
         <header>
-          <div class="d-flex flex-column flex-md-row align-items-center pb-3 mb-4 border-bottom">
-            <a href="/" class="d-flex align-items-center text-dark text-decoration-none">
-              <span class="fs-4">ZimWiki</span>
-            </a>
-      
-            <nav class="d-inline-flex mt-2 mt-md-0 ms-md-auto">
-                    <form method="POST" id="searchform">
 
+            <div class="d-flex flex-column flex-md-row align-items-center pb-3 mb-4 border-bottom">
+                <a href="/" class="d-flex align-items-center text-dark text-decoration-none">
+                <span class="fs-4">ZimWiki</span>
+                </a>
+
+                <nav class="d-inline-flex mt-2 mt-md-0 ms-md-auto">
+                    <form method="POST" id="searchform">
                         <div class="input-group">
                             <input type="hidden" id="sQuery"name="sQuery">
                             <input type="text" class="form-control" id="searchtxt" onkeydown="enterSearch(this)"  placeholder="Search">
                             <button class="btn btn-outline-secondary" type="button" onclick='search(document.getElementById("searchtxt").value)'><i class="fa fa-search"></i></button>
-                          </div>
-
-            
+                        </div>
                     </form>
-            </nav>
-          </div>
-      
+                </nav>
 
+            </div>
         </header>
+
         <main>
             <!-- Include here -->
         
             {{template "content" .}}
-        
-    </div>
-</main>
 
+       </main>
+    </div>
 </body>
 </html>
