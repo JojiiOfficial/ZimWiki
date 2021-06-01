@@ -6,6 +6,11 @@
 <script src="/assets/js/jquery.min.js"></script>
 
 <script>
+// Get iframe title
+document.querySelector( "iframe" ).addEventListener('load',function() {
+    document.title = document.getElementById("wikiContent").contentDocument.title;
+});
+
 function fixURLs(){
 	// Get contents of the iframe
     var wikiContent = $("#wikiContent").contents();
