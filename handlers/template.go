@@ -21,7 +21,6 @@ type TemplateData struct {
 	FavIcon      string
 	Wiki         string
 	Namespace    string
-	WrapperClass string
 
 	HomeTemplateData
 	WikiViewTemplateData
