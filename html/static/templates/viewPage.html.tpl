@@ -1,7 +1,9 @@
 {{ define "content" }}
 
-<iframe type="text/html" src="{{ .Source }}" style="position:fixed;height:100%;width:100%;right:0" target="_parent" id="wikiContent" frameBorder="0" onload="fixURLs()">
-</iframe>
+<div class="iframe-container">
+    <iframe type="text/html" src="{{ .Source }}" target="_parent" id="wikiContent" frameBorder="0" onload="fixURLs()">
+    </iframe>
+</div>
 
 <script src="/assets/js/jquery.min.js"></script>
 
