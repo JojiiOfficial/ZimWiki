@@ -3,7 +3,7 @@
 <iframe type="text/html" src="{{ .Source }}" style="position:fixed;height:100%;width:100%;right:0" target="_parent" id="wikiContent" frameBorder="0" onload="fixURLs()">
 </iframe>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="/assets/js/jquery.min.js"></script>
 
 <script>
 function fixURLs(){
