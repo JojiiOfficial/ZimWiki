@@ -5,7 +5,7 @@
     <div class="justify-content-md-center row" id="ContentContainer">
 
             {{/* Display message if no wiki was found */}}
-            {{if not .Cards}} Nothing here yet {{end}}
+            {{if not .Cards}} <p><i class="fa fa-frown-o fa-fw" aria-hidden="true"></i> Nothing here yet.</p> {{end}}
 
             {{/* Add all available cards */}}
             {{ range .Cards }}
