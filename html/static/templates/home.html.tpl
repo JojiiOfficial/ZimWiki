@@ -21,7 +21,7 @@
                                     <p>{{ .Text }}</p>
                                 </div>
                             </div>
-                            <a class="btn btn-outline-secondary" href="{{ .Link }}"><i class="fa fa-book"></i> Read</a>
+                            <a class="btn btn-outline-secondary" href="{{ .Link }}"><i class="fa fa-book fa-fw" aria-hidden="true"></i> Read</a>
                         </div>
                     </div>
                 </div>

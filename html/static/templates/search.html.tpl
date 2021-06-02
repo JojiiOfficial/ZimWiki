@@ -1,6 +1,6 @@
 {{  define "content" }}
 
-        <h1> <i class="fa fa-search"></i> Search results for "{{ .QueryText }}" </h1>
+        <h1> <i class="fa fa-search fa-fw" aria-hidden="true"></i> Search results for "{{ .QueryText }}" </h1>
         <h3>
             [in {{ .SearchSource }}]
         </h3>
@@ -15,7 +15,7 @@
                         <h4 class="card-title" style="margin-bottom:0">{{ .Title }}</h4>
                     </div>
                     <div class="card-body">
-                        <a class="btn btn-outline-secondary" href="{{ .Link }}"><i class="fa fa-book"></i> Read</a>
+                        <a class="btn btn-outline-secondary" href="{{ .Link }}"><i class="fa fa-book fa-fw" aria-hidden="true"></i> Read</a>
                     </div>
                 </div>
             </div>

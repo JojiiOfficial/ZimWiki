@@ -17,7 +17,9 @@
 </head>
 
 <body>
+
     <div class="container py-3">
+
         <header>
 
             <div class="d-flex flex-column flex-md-row align-items-center pb-3 mb-4 border-bottom">
@@ -30,7 +32,7 @@
                         <div class="input-group">
                             <input type="hidden" id="sQuery"name="sQuery">
                             <input type="text" class="form-control" id="searchtxt" onkeydown="enterSearch(this)"  placeholder="Search">
-                            <button class="btn btn-outline-secondary" type="button" onclick='search(document.getElementById("searchtxt").value)'><i class="fa fa-search"></i></button>
+                            <button class="btn btn-outline-secondary" type="button" onclick='search(document.getElementById("searchtxt").value)'><i class="fa fa-search fa-fw" aria-hidden="true"></i></button>
                         </div>
                     </form>
                 </nav>
