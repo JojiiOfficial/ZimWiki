@@ -10,9 +10,7 @@
 <script>
     $(document).ready(function() {
         // Get iframe title
-        document.querySelector("iframe").addEventListener('load',function() {
-            document.title = document.getElementById("wikiContent").contentDocument.title;
-        });
+        document.title = document.getElementById("wikiContent").contentDocument.title;
     });
 
     function fixURLs(){
