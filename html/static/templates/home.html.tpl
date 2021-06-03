@@ -16,7 +16,7 @@
                                 <div class="col-sm-2">
                                     <img src="{{ .Image }}">
                                 </div>
-                                <div class="col col-xxl-5">
+                                <div class="col col-xxl-8">
                                     <h4>{{ .Title }}</h4>
                                     <p>{{ .Text }}</p>
                                 </div>
