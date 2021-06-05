@@ -6,7 +6,7 @@ import (
 	"net/url"
 	"strings"
 
-	"git.jojii.de/jojii/zimserver/zim"
+	"github.com/JojiiOfficial/ZimWiki/zim"
 	gzim "github.com/tim-st/go-zim"
 )
 
