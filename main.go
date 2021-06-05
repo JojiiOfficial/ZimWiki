@@ -14,29 +14,42 @@ import (
 	"github.com/pelletier/go-toml"
 )
 
+type configStruct struct {
+	libPath  string
+	address  string
+}
+
 func main() {
 	setupLogger()
 
-	config, err := toml.LoadFile("config.toml")
+	// Default configuration of ZimWiki
+	defaultConfig, _ := toml.Load(`
+	[Config]
+	LibraryPath = "./library"
+	Address = ":8080"`)
 
-	// If the configuration file does not exist, return an error
-	if err != nil {
-		log.Error(err)
-	} 
+	// Load default configuration
+	config := configStruct{libPath: defaultConfig.Get("Config.LibraryPath").(string), address: defaultConfig.Get("Config.Address").(string)}
+
+	// Load configuration file
+	configData, err := toml.LoadFile("config.toml")
 	
-	// Define the variables retrieved from the configration file
-	configTree := config.Get("Config").(*toml.Tree)
-	libPath := configTree.Get("LibraryPath").(string)
-	port := configTree.Get("Port").(string)
+	// If the configuration file has been successfully loaded
+	if (err == nil) {
+		configDataTree := configData.Get("Config").(*toml.Tree)
+		config = configStruct{libPath: configDataTree.Get("LibraryPath").(string), address: configDataTree.Get("Address").(string)}		
+	} else {
+		log.Error("Config.toml not found, default configuration will be used.")
+	}
 
 	if len(os.Args) > 1 {
-		libPath = os.Args[1]
+		config.libPath = os.Args[1]
 	}
 
 	// Verify library path
-	s, err := os.Stat(libPath)
+	s, err := os.Stat(config.libPath)
 	if err != nil {
-		log.Errorf("Can't use '%s' as library path. %s", libPath, err)
+		log.Errorf("Can't use '%s' as library path. %s", config.libPath, err)
 		return
 	}
 	if !s.IsDir() {
@@ -44,19 +57,19 @@ func main() {
 		return
 	}
 
-	service := zim.New(libPath)
-	err = service.Start(libPath)
+	service := zim.New(config.libPath)
+	err = service.Start(config.libPath)
 	if err != nil {
 		log.Fatalln(err)
 		return
 	}
 
-	startServer(service, port)
+	startServer(service, config)
 }
 
-func startServer(zimService *zim.Handler, port string) {
+func startServer(zimService *zim.Handler, config configStruct) {
 	router := NewRouter(zimService)
-	server := createServer(router, port)
+	server := createServer(router, config)
 
 	// Start server
 	go func() {
@@ -71,9 +84,9 @@ func startServer(zimService *zim.Handler, port string) {
 }
 
 // Build a new Http server
-func createServer(router http.Handler, port string) http.Server {
+func createServer(router http.Handler, config configStruct) http.Server {
 	return http.Server{
-		Addr:    port,
+		Addr:    config.address,
 		Handler: router,
 	}
 }

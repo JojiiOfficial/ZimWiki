@@ -42,7 +42,7 @@ config.toml:
 ```toml
 [Config]
   LibraryPath = "./library"
-  Port = ":8080"
+  Address = ":8080"
 ```
 
 # Usage
