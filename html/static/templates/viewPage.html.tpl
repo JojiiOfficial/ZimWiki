@@ -8,7 +8,7 @@
 <script src="/assets/js/jquery.min.js"></script>
 
 <script>
-    $(document).ready(function() {
+    $( "iframe" ).on('load',function() {
         // Get iframe title
         document.title = document.getElementById("wikiContent").contentDocument.title;
     });
