@@ -3,7 +3,7 @@ package handlers
 import (
 	"net/http"
 
-	"git.jojii.de/jojii/ZimWiki/zim"
+	"github.com/JojiiOfficial/ZimWiki/zim"
 )
 
 // Index handle index route

@@ -1,4 +1,4 @@
-module git.jojii.de/jojii/ZimWiki
+module github.com/JojiiOfficial/ZimWiki
 
 go 1.14
 
