@@ -46,7 +46,7 @@ config.toml:
 ```
 
 # Usage
-Your `LibraryPath` must contain your .zim files inside it.  
+Your `LibraryPath` must contain your .zim files inside it, you can also link them using symlinks.  
 Run the binary and go to `https://localhost:Port`
 
 # Features
