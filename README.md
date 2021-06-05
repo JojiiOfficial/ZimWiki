@@ -41,8 +41,8 @@ or
 config.toml:
 ```toml
 [Config]
-  LibraryPath = "./library"
-  Address = ":8080"
+LibraryPath = "./library"
+Address = ":8080"
 ```
 
 # Usage
