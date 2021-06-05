@@ -4,4 +4,5 @@ main
 .vscode
 .idea
 library
+config.toml
 ZimWiki

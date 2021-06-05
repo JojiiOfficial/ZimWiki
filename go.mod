@@ -10,6 +10,7 @@ require (
 	github.com/gorilla/mux v1.8.0
 	github.com/klauspost/compress v1.12.3
 	github.com/konsorten/go-windows-terminal-sequences v1.0.3 // indirect
+	github.com/pelletier/go-toml v1.9.1
 	github.com/pkg/errors v0.9.1
 	github.com/sirupsen/logrus v1.8.1
 	github.com/tim-st/go-zim v0.1.2
