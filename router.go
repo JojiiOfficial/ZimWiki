@@ -9,8 +9,8 @@ import (
 	"net/http/pprof"
 	_ "net/http/pprof"
 
-	"git.jojii.de/jojii/zimserver/handlers"
-	"git.jojii.de/jojii/zimserver/zim"
+	"github.com/JojiiOfficial/ZimWiki/handlers"
+	"github.com/JojiiOfficial/ZimWiki/zim"
 	"github.com/gorilla/mux"
 	log "github.com/sirupsen/logrus"
 )
