@@ -29,18 +29,23 @@ func main() {
 	Address = ":8080"`)
 
 	// Load default configuration
-	config := configStruct{libPath: defaultConfig.Get("Config.LibraryPath").(string), address: defaultConfig.Get("Config.Address").(string)}
+	libPath := defaultConfig.Get("Config.LibraryPath").(string)
+	address := defaultConfig.Get("Config.Address").(string)
 
 	// Load configuration file
 	configData, err := toml.LoadFile("config.toml")
 	
 	// If the configuration file has been successfully loaded
 	if (err == nil) {
+		// Load the configuration from the configuration file
 		configDataTree := configData.Get("Config").(*toml.Tree)
-		config = configStruct{libPath: configDataTree.Get("LibraryPath").(string), address: configDataTree.Get("Address").(string)}		
+		libPath = configDataTree.Get("LibraryPath").(string)
+		address = configDataTree.Get("Address").(string)
 	} else {
 		log.Error("Config.toml not found, default configuration will be used.")
 	}
+
+	config := configStruct{libPath: libPath, address: address}		
 
 	if len(os.Args) > 1 {
 		config.libPath = os.Args[1]
