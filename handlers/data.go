@@ -1,6 +1,6 @@
 package handlers
 
-import "git.jojii.de/jojii/zimserver/zim"
+import "github.com/JojiiOfficial/ZimWiki/zim"
 
 // HandlerData data for handler funcs
 type HandlerData struct {
