@@ -1,3 +1,7 @@
+document.addEventListener("DOMContentLoaded", function() {
+	document.querySelector(".no-js").style.visibility="visible";
+});
+
 function enterSearch(ele){
 	if (event.key === 'Enter') {
 		search(ele.value);

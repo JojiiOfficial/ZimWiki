@@ -43,3 +43,7 @@ h1, h2, h3 {
 #noResult {
 	text-align: center;
 }
+
+.no-js {
+	visibility: hidden;
+}
