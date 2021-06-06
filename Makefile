@@ -1,6 +1,6 @@
 build:
 	go mod download
-	go build -o zimwiki
+	go build -o ZimWiki
 
 default: build
 
@@ -14,26 +14,26 @@ test:
 	go test
 
 man: build
-	./zimwiki --help-man | man -l -
+	./ZimWiki --help-man | man -l -
 
 run:
-	./zimwiki
+	./ZimWiki
 
 debug: build
-	./zimwiki
+	./ZimWiki
 
 install:
-	@if ! test -f zimwiki;then echo 'run "make build" first'; exit 1; fi
+	@if ! test -f ZimWiki;then echo 'run "make build" first'; exit 1; fi
 
 ifneq ($(shell id -u), 0)
 	@echo "You must be root to perform this action."
 	@exit 1
 endif
 	@mkdir -p /usr/local/share/man/man8
-	cp zimwiki /usr/bin/zimwiki
-	/usr/bin/zimwiki --help-man > zimwiki.1
-	install -Dm644 zimwiki.1 /usr/share/man/man8/zimwiki.8
-	@rm zimwiki.1
+	cp ZimWiki /usr/bin/ZimWiki
+	/usr/bin/ZimWiki --help-man > ZimWiki.1
+	install -Dm644 ZimWiki.1 /usr/share/man/man8/ZimWiki.8
+	@rm ZimWiki.1
 	@echo Installed successfully!
 
 uninstall:
@@ -41,11 +41,11 @@ ifneq ($(shell id -u), 0)
 	@echo "You must be root to perform this action."
 	@exit 1
 endif
-	rm /usr/bin/zimwiki
-	rm -f /usr/share/man/man8/zimwiki.8
+	rm /usr/bin/ZimWiki
+	rm -f /usr/share/man/man8/ZimWiki.8
 	@echo Uninstalled successfully!
 
 clean:
-	rm -f zimwiki.1
-	rm -f zimwiki
+	rm -f ZimWiki.1
+	rm -f ZimWiki
 	rm -f main

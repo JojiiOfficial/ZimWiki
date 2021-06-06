@@ -1,4 +1,4 @@
-# ZimServer
+# ZimWiki
 A modern zim fileserver which can handle multiple zim files by serving a beautiful Wiki website. It is a lightweight and performant replacement for kiwix-serve and can handle many big wiki archives (zim files).
 
 # Screenshots
@@ -32,13 +32,22 @@ A modern zim fileserver which can handle multiple zim files by serving a beautif
  
 
 # Installation
-- Install go and compile it using `go build -o zimserver`
+- Install go and compile it using `go build`
 or
 - Download the latest release
 
+# Configuration
+### Example
+config.toml:
+```toml
+[Config]
+LibraryPath = "./library"
+Address = ":8080"
+```
+
 # Usage
-Create a folder `library` and place your .zim files inside it, or link them using symlinks.<br>
-Run the binary and go to `https://localhost:8080`
+Your `LibraryPath` must contain your .zim files inside it, you can also link them using symlinks.  
+Run the binary and go to `https://localhost:Port`
 
 # Features
 - [x] Read/Handle multiple Zim files
@@ -48,4 +57,4 @@ Run the binary and go to `https://localhost:8080`
 - [x] Send content gzipped
 - [x] Use symlinks as .zim link
 - [x] Replace absolute links with relative ones
-- [ ] Config file
+- [X] Config file
