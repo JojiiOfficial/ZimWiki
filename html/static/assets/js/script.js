@@ -24,3 +24,9 @@ document.addEventListener('keyup', (e) => {
       document.getElementById("searchtxt").focus();
     }
 });
+
+if (wiki == "-") {
+	document.getElementById("searchtxt").placeholder = "Search anywhere";
+} else {
+	document.getElementById("searchtxt").placeholder = "Search in this wiki";
+}
