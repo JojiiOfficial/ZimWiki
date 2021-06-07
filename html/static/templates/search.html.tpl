@@ -1,12 +1,12 @@
 {{  define "content" }}
 
         <h1> <i class="fa fa-search fa-fw" aria-hidden="true"></i> Search results for "{{ .QueryText }}" </h1>
-        <h3>
-            [in {{ .SearchSource }}]
-        </h3>
         <h5>
-            {{ .ResultText }} in {{ .TimeTook }}
+            [in {{ .SearchSource }}]
         </h5>
+        <h6>
+            {{ .ResultText }} in {{ .TimeTook }}
+        </h6>
 
    <div class="justify-content-md-center row" id="ContentContainer">
 
