@@ -4,6 +4,7 @@ import (
 	"html/template"
 	"net/http"
 	"path"
+	"time"
 )
 
 var (
@@ -52,6 +53,8 @@ type SearchTemplateData struct {
 	SearchSource string
 	QueryText    string
 	Results      []SearchResult
+	ResultText   string
+	TimeTook     time.Duration
 }
 
 // SearchResult represents a single result of a search query

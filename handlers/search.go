@@ -6,6 +6,7 @@ import (
 	"sort"
 	"sync"
 	"time"
+	"strconv"
 
 	"github.com/JojiiOfficial/ZimWiki/zim"
 	"github.com/gorilla/mux"
@@ -13,7 +14,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func searchSingle(query string, wiki *zim.File) []zim.SRes {
+func searchSingle(query string, wiki *zim.File) ([]zim.SRes, string) {
 	// Search entries
 	entries := wiki.SearchForEntry(query)
 	// Sort them by similarity
@@ -25,11 +26,20 @@ func searchSingle(query string, wiki *zim.File) []zim.SRes {
 		e = len(entries)
 	}
 
-	return entries[:e]
+	// Know the number of results
+	resultText := "No result was found"
+
+	if len(entries) == 1 {
+		resultText = "One result was found"
+	} else if len(entries) != 0 {
+		resultText = strconv.Itoa(len(entries)) + " results was found"
+	}
+
+	return entries[:e], resultText
 }
 
 // Search in all available wikis
-func searchGlobal(query string, handler *zim.Handler) []zim.SRes {
+func searchGlobal(query string, handler *zim.Handler) ([]zim.SRes, string) {
 	var results []zim.SRes
 	mx := sync.Mutex{}
 	wg := sync.WaitGroup{}
@@ -63,7 +73,16 @@ func searchGlobal(query string, handler *zim.Handler) []zim.SRes {
 		e = len(results)
 	}
 
-	return results[:e]
+	// Know the number of results
+	resultText := "No result was found"
+
+	if len(results) == 1 {
+		resultText = "One result was found"
+	} else if len(results) != 0 {
+		resultText = strconv.Itoa(len(results)) + " results was found"
+	}
+
+	return results[:e], resultText
 }
 
 // Search handles serach requests
@@ -93,12 +112,13 @@ func Search(w http.ResponseWriter, r *http.Request, hd HandlerData) error {
 
 	var res []zim.SRes
 	var source string
+	var resultText string
 
 	start := time.Now()
 	if wiki == "-" {
 		source = "global search"
 
-		res = searchGlobal(query, hd.ZimService)
+		res, resultText = searchGlobal(query, hd.ZimService)
 	} else {
 		// Wiki search
 		z := hd.ZimService.FindWikiFile(wiki)
@@ -109,7 +129,7 @@ func Search(w http.ResponseWriter, r *http.Request, hd HandlerData) error {
 		source = z.File.Title()
 
 		// Search for query in WIKI
-		res = searchSingle(query, z)
+		res, resultText = searchSingle(query, z)
 	}
 
 	favCache := make(map[string]string)
@@ -137,7 +157,9 @@ func Search(w http.ResponseWriter, r *http.Request, hd HandlerData) error {
 		}
 	}
 
-	log.Info("Searching took ", time.Since(start))
+	timeTook := time.Since(start)
+
+	log.Info(resultText, " in ", timeTook)
 
 	// Redirect to wiki page if only
 	// one search result was found
@@ -152,6 +174,8 @@ func Search(w http.ResponseWriter, r *http.Request, hd HandlerData) error {
 			Results:      results,
 			QueryText:    query,
 			SearchSource: source,
+			ResultText:   resultText,
+			TimeTook:     timeTook,
 		},
 	})
 }

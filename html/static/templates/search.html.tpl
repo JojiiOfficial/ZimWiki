@@ -4,11 +4,11 @@
         <h3>
             [in {{ .SearchSource }}]
         </h3>
+        <h5>
+            {{ .ResultText }} in {{ .TimeTook }}
+        </h5>
 
    <div class="justify-content-md-center row" id="ContentContainer">
-
-        {{/* Display message if no result was found */}}
-        {{if not .Results}} <p id="noResult"><i class="fa fa-frown-o fa-fw" aria-hidden="true"></i> Nothing was found.</p> {{end}}
 
         {{ range .Results }}
             <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12">
