@@ -21,20 +21,25 @@ func searchSingle(query string, nbResultsPerPage int, resultsUntil int, wiki *zi
 	// Sort them by similarity
 	sort.Sort(sort.Reverse(zim.ByPercentage(entries)))
 
+	// Calculate the first result displayed in the page
 	resultsStart := resultsUntil - nbResultsPerPage
 
+	// If the result of the calculation is negative, set the variable to 0
 	if resultsStart < 0 {
 		resultsStart = 0
 	}
 
+	// If the number of results to be displayed per page is lower than the total number of results
 	if len(entries) < nbResultsPerPage {
 		resultsUntil = len(entries)
 	}
 
+	// If the result to be the maximum result of the page is greater than the number of total results
 	if resultsUntil > len(entries) {
 		resultsUntil = len(entries)
 	}
 
+	// Calculate the total number of pages
 	nbPages := int(math.Ceil(float64(len(entries)) / float64(nbResultsPerPage)))
 
 	// Know the number of results
@@ -80,18 +85,22 @@ func searchGlobal(query string, nbResultsPerPage int, resultsUntil int, handler 
 
 	resultsStart := resultsUntil - nbResultsPerPage
 
+	// If the result of the calculation is negative, set the variable to 0
 	if resultsStart < 0 {
 		resultsStart = 0
 	}
 
+	// If the number of results to be displayed per page is lower than the total number of results
 	if len(results) < nbResultsPerPage {
 		resultsUntil = len(results)
 	}
 
+	// If the result to be the maximum result of the page is greater than the number of total results
 	if resultsUntil > len(results) {
 		resultsUntil = len(results)
 	}
 
+	// Calculate the total number of pages
 	nbPages := int(math.Ceil(float64(len(results)) / float64(nbResultsPerPage)))
 
 	// Know the number of results
@@ -119,6 +128,7 @@ func Search(w http.ResponseWriter, r *http.Request, hd HandlerData) error {
 	if r.Method == "POST" {
 		// Get Post search query
 		query = r.PostFormValue("sQuery")
+		// Get the number of the current page
 		actualPageNb, _ = strconv.Atoi(r.PostFormValue("pageNumber"))
 	}
 
@@ -127,12 +137,15 @@ func Search(w http.ResponseWriter, r *http.Request, hd HandlerData) error {
 		return nil
 	}
 
+	// If the variable is not defined, we set it to 1
 	if actualPageNb == 0 {
 		actualPageNb = 1
 	}
 
+	// The number of results displayed per page
 	nbResultsPerPage := 12
 
+	// A small calculus to know the last result to display
 	resultsUntil := nbResultsPerPage * actualPageNb
 
 	var res []zim.SRes
