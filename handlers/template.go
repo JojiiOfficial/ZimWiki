@@ -55,6 +55,10 @@ type SearchTemplateData struct {
 	Results      []SearchResult
 	ResultText   string
 	TimeTook     time.Duration
+	ActualPageNb int
+	NbPages      int
+	PreviousPage int
+	NextPage     int
 }
 
 // SearchResult represents a single result of a search query
