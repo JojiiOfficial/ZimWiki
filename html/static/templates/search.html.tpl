@@ -1,5 +1,9 @@
 {{  define "content" }}
 
+        <script>
+            var queryText = '{{ .QueryText }}'
+        </script>
+
         <h1> <i class="fa fa-search fa-fw" aria-hidden="true"></i> Search results for "{{ .QueryText }}" </h1>
         <h5>
             [in {{ .SearchSource }}]

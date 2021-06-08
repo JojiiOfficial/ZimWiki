@@ -9,8 +9,13 @@ document.addEventListener('keyup', (e) => {
     }
 });
 
+if (typeof queryText !== 'undefined') {
+	document.getElementById("sQuery").value = queryText;
+}
+
+
 if (wiki == "-") {
-	document.getElementById("searchtxt").placeholder = "Search anywhere";
+	document.getElementById("sQuery").placeholder = "Search anywhere";
 } else {
-	document.getElementById("searchtxt").placeholder = "Search in this wiki";
+	document.getElementById("sQuery").placeholder = "Search in this wiki";
 }
