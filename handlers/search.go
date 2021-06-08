@@ -24,9 +24,14 @@ func searchSingle(query string, nbResultsPerPage int, resultsUntil int, wiki *zi
 	// Calculate the first result displayed in the page
 	resultsStart := resultsUntil - nbResultsPerPage
 
-	// If the result of the calculation is negative, set the variable to 0
+	// If the result of the calculation is negative
 	if resultsStart < 0 {
 		resultsStart = 0
+	}
+
+	// If the result of the calculation is greater than the total of the results
+	if resultsStart > len(entries) {
+		resultsStart = len(entries)
 	}
 
 	// If the number of results to be displayed per page is lower than the total number of results
@@ -90,6 +95,11 @@ func searchGlobal(query string, nbResultsPerPage int, resultsUntil int, handler 
 		resultsStart = 0
 	}
 
+	// If the result of the calculation is greater than the total of the results
+	if resultsStart > len(results) {
+		resultsStart = len(results)
+	}
+
 	// If the number of results to be displayed per page is lower than the total number of results
 	if len(results) < nbResultsPerPage {
 		resultsUntil = len(results)
@@ -137,8 +147,8 @@ func Search(w http.ResponseWriter, r *http.Request, hd HandlerData) error {
 		return nil
 	}
 
-	// If the variable is not defined, we set it to 1
-	if actualPageNb == 0 {
+	// If the variable is not defined or negative, we set it to 1
+	if (actualPageNb == 0) || (actualPageNb < 0) {
 		actualPageNb = 1
 	}
 
