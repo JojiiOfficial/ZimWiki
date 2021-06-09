@@ -50,9 +50,7 @@ func searchSingle(query string, nbResultsPerPage int, resultsUntil int, wiki *zi
 	// Know the number of results
 	resultText := "No result"
 
-	if len(entries) == 1 {
-		resultText = "1 result"
-	} else if len(entries) != 0 {
+	if len(entries) != 0 {
 		resultText = strconv.Itoa(len(entries)) + " results"
 	}
 
@@ -116,9 +114,7 @@ func searchGlobal(query string, nbResultsPerPage int, resultsUntil int, handler 
 	// Know the number of results
 	resultText := "No result"
 
-	if len(results) == 1 {
-		resultText = "1 result"
-	} else if len(results) != 0 {
+	if len(results) != 0 {
 		resultText = strconv.Itoa(len(results)) + " results"
 	}
 
