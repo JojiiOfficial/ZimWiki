@@ -1,0 +1,49 @@
+body {
+	overflow-x: hidden;
+	font-family: 'Linux Libertine','Georgia','Times',serif;
+}
+
+.header img {
+	float: left;
+	width: 100px;
+	height: 100px;
+	margin-right: 10px;
+}
+
+.header h1 {
+	position: relative;
+	top: 18px;
+	left: 10px;
+}
+
+h1, h2, h3 {
+	text-align: center;
+	margin-bottom: 1.0rem;
+}
+
+.card-body a {
+	float: right;
+}
+
+.iframe-container {
+	position: absolute;
+	top: 57px;
+	left: 0;
+	right: 0;
+	bottom: 0;
+}
+
+.iframe-container #wikiContent {
+	display: block;
+	width: 100%;
+	height: 100%;
+	border: none;
+}
+
+#noResult {
+	text-align: center;
+}
+
+.no-js {
+	visibility: hidden;
+}

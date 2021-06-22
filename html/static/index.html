@@ -1,69 +1,54 @@
 <!DOCTYPE html>
-<html style="color: rgb(6,6,6);">
+<html>
 
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <title>Wiki</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.12.0/css/all.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="/assets/fonts/fontawesome5-overrides.min.css">
-    <link rel="stylesheet" href="/assets/css/styles.min.css">
+    <title>ZimWiki</title>
+    <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/assets/css/forkawesome.min.css">
+    <link rel="stylesheet" href="/assets/css/styles.css">
+    <script src="/assets/js/script.js"></script>
     <link rel="shortcut icon" type="{{ .Favtype }}" href="{{ .FavIcon }}">
-    <style>
-        .center {
-            display: block;
-            margin-left: auto;
-            margin-right: auto;
-            width: 50%;
-        }
-    </style>
     <script>
         var wiki = '{{ .Wiki }}'
         var namespace = '{{ .Namespace }}'
     </script>
 </head>
 
-<body style="color: rgb(0,0,0);">
-    <div id="wrapper" class="{{ .WrapperClass }}">
-        <div id="sidebar-wrapper">
-            <ul class="sidebar-nav">
-                <li class="sidebar-brand"> <a href="#" style="font-size:1.6em;font-weight:bold">Wiki</a></li>
-                <li> <span><a class="text-nowrap" href="/">Home</a></span></li>
-            </ul>
-        </div>
-        <div class="page-content-wrapper">
-            <div class="container-fluid">
-                <div class="row" style="padding-top: 10px;">
-                    <div class="col-2 col-xl-2"><a class="btn btn-link" role="button" id="menu-toggle" href="#menu-toggle"><i class="fa fa-bars"></i></a></div>
-                    <div class="col justify-content-xl-start">
-                        <div style="max-width: 300px;float:right">
-                            <form method="POST" id="searchform">
-                                <input type="hidden" id="sQuery"name="sQuery">
-                                <div class="input-group">
-                                    <input class="bg-light form-control border-0 small" type="text" id="searchtxt" onkeydown="enterSearch(this)"  placeholder="Search">
-                                    <div class="input-group-append">
-                                        <button class="btn btn-primary py-0" type="button" onclick='search(document.getElementById("searchtxt").value)'>
-                                            <i class="fas fa-search"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
+<body>
+
+    <noscript>
+        <h1><i class="fa fa-frown-o fa-fw" aria-hidden="true"></i> JavaScript is off. ZimWiki needs JavaScript support to work.</h1>
+    </noscript>
+
+    <div class="container no-js">
+
+        <header class="py-2">
+                <div class="row flex-nowrap justify-content-between align-items-center pb-2 mb-3">
+                    <div class="col-4 pt-1">
+                        <a href="/" class="d-flex align-items-center text-dark text-decoration-none">
+                            <span class=" fs-4">ZimWiki</span>
+                        </a>
+                    </div>
+                    <div class="col-8 d-flex justify-content-end align-items-center">
+                        <form method="POST" id="searchform">
+                            <div class="input-group">
+                                <input type="hidden" id="sQuery" name="sQuery">
+                                <input type="text" class="form-control" id="searchtxt" onkeydown="enterSearch(this)" placeholder="Search">
+                                <button class="btn btn-outline-secondary" type="button" onclick='search(document.getElementById("searchtxt").value)'><i class="fa fa-search fa-fw" aria-hidden="true"></i></button>
+                            </div>
+                        </form>
                     </div>
                 </div>
-            </div>
-        </div>
-        <div class="container-fluid" id="ContentContainer" style="margin-top: 18px;height:100%">
+            </header>
+
+        <main>
             <!-- Include here -->
         
             {{template "content" .}}
-        
-        </div>
+
+       </main>
     </div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/js/bootstrap.bundle.min.js"></script>
-    <script src="/assets/js/script.min.js"></script>
 </body>
 </html>
