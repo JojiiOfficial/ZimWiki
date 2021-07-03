@@ -2,25 +2,19 @@ document.addEventListener("DOMContentLoaded", function() {
 	document.querySelector(".no-js").style.visibility="visible";
 });
 
-function enterSearch(ele){
-	if (event.key === 'Enter') {
-		search(ele.value);
-	}
+if (typeof queryText !== 'undefined') {
+	document.getElementById("sQuery").value = queryText;
 }
 
-function search(text) {
-	let searchForm = document.getElementById("searchform");
-	let queryData = document.getElementById("sQuery");
-	document.querySelector("#searchform").setAttribute("action","/search/"+wiki+"/");
-	queryData.value = text;
-	if (text.replace(/\s/g, "") != "") {
-		searchForm.submit();
-	}
+if (wiki == "-") {
+	document.getElementById("sQuery").placeholder = "Search anywhere";
+} else {
+	document.getElementById("sQuery").placeholder = "Search in this wiki";
 }
 
 // For all those vim lovers
 document.addEventListener('keyup', (e) => {
     if (e.keyCode === 191) {
-      document.getElementById("searchtxt").focus();
+      document.getElementById("sQuery").focus();
     }
 });

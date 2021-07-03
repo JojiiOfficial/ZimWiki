@@ -6,6 +6,8 @@ import (
 	"sort"
 	"sync"
 	"time"
+	"strconv"
+	"math"
 
 	"github.com/JojiiOfficial/ZimWiki/zim"
 	"github.com/gorilla/mux"
@@ -13,23 +15,50 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func searchSingle(query string, wiki *zim.File) []zim.SRes {
+func searchSingle(query string, nbResultsPerPage int, resultsUntil int, wiki *zim.File) ([]zim.SRes, string, int, int) {
 	// Search entries
 	entries := wiki.SearchForEntry(query)
 	// Sort them by similarity
 	sort.Sort(sort.Reverse(zim.ByPercentage(entries)))
 
-	// Limit all results to 100
-	e := 100
-	if len(entries) < e {
-		e = len(entries)
+	// Calculate the first result displayed in the page
+	resultsStart := resultsUntil - nbResultsPerPage
+
+	// If the result of the calculation is negative
+	if resultsStart < 0 {
+		resultsStart = 0
 	}
 
-	return entries[:e]
+	// If the result of the calculation is greater than the total of the results
+	if resultsStart > len(entries) {
+		resultsStart = len(entries)
+	}
+
+	// If the number of results to be displayed per page is lower than the total number of results
+	if len(entries) < nbResultsPerPage {
+		resultsUntil = len(entries)
+	}
+
+	// If the result to be the maximum result of the page is greater than the number of total results
+	if resultsUntil > len(entries) {
+		resultsUntil = len(entries)
+	}
+
+	// Calculate the total number of pages
+	nbPages := int(math.Ceil(float64(len(entries)) / float64(nbResultsPerPage)))
+
+	// Know the number of results
+	resultText := "No result"
+
+	if len(entries) != 0 {
+		resultText = strconv.Itoa(len(entries)) + " results"
+	}
+
+	return entries[resultsStart:resultsUntil], resultText, len(entries), nbPages
 }
 
 // Search in all available wikis
-func searchGlobal(query string, handler *zim.Handler) []zim.SRes {
+func searchGlobal(query string, nbResultsPerPage int, resultsUntil int, handler *zim.Handler) ([]zim.SRes, string, int, int) {
 	var results []zim.SRes
 	mx := sync.Mutex{}
 	wg := sync.WaitGroup{}
@@ -57,13 +86,39 @@ func searchGlobal(query string, handler *zim.Handler) []zim.SRes {
 	// Sort by similarity
 	sort.Sort(sort.Reverse(zim.ByPercentage(results)))
 
-	// Limit all results to 100
-	e := 100
-	if len(results) < e {
-		e = len(results)
+	resultsStart := resultsUntil - nbResultsPerPage
+
+	// If the result of the calculation is negative, set the variable to 0
+	if resultsStart < 0 {
+		resultsStart = 0
 	}
 
-	return results[:e]
+	// If the result of the calculation is greater than the total of the results
+	if resultsStart > len(results) {
+		resultsStart = len(results)
+	}
+
+	// If the number of results to be displayed per page is lower than the total number of results
+	if len(results) < nbResultsPerPage {
+		resultsUntil = len(results)
+	}
+
+	// If the result to be the maximum result of the page is greater than the number of total results
+	if resultsUntil > len(results) {
+		resultsUntil = len(results)
+	}
+
+	// Calculate the total number of pages
+	nbPages := int(math.Ceil(float64(len(results)) / float64(nbResultsPerPage)))
+
+	// Know the number of results
+	resultText := "No result"
+
+	if len(results) != 0 {
+		resultText = strconv.Itoa(len(results)) + " results"
+	}
+
+	return results[resultsStart:resultsUntil], resultText, len(results), nbPages
 }
 
 // Search handles serach requests
@@ -74,16 +129,13 @@ func Search(w http.ResponseWriter, r *http.Request, hd HandlerData) error {
 		return fmt.Errorf("Missing parameter")
 	}
 	var query string
+	var actualPageNb int
 
-	if r.Method == "GET" {
-		// Get GET search query
-		getQuery, ok := r.URL.Query()["q"]
-		if ok && len(getQuery) > 0 {
-			query = getQuery[0]
-		}
-	} else if r.Method == "POST" {
+	if r.Method == "POST" {
 		// Get Post search query
 		query = r.PostFormValue("sQuery")
+		// Get the number of the current page
+		actualPageNb, _ = strconv.Atoi(r.PostFormValue("pageNumber"))
 	}
 
 	if len(query) == 0 {
@@ -91,14 +143,28 @@ func Search(w http.ResponseWriter, r *http.Request, hd HandlerData) error {
 		return nil
 	}
 
+	// If the variable is not defined or negative, we set it to 1
+	if (actualPageNb == 0) || (actualPageNb < 0) {
+		actualPageNb = 1
+	}
+
+	// The number of results displayed per page
+	nbResultsPerPage := 12
+
+	// A small calculus to know the last result to display
+	resultsUntil := nbResultsPerPage * actualPageNb
+
 	var res []zim.SRes
 	var source string
+	var resultText string
+	var nbResults int
+	var nbPages int
 
 	start := time.Now()
 	if wiki == "-" {
 		source = "global search"
 
-		res = searchGlobal(query, hd.ZimService)
+		res, resultText, nbResults, nbPages = searchGlobal(query, nbResultsPerPage, resultsUntil, hd.ZimService)
 	} else {
 		// Wiki search
 		z := hd.ZimService.FindWikiFile(wiki)
@@ -109,7 +175,18 @@ func Search(w http.ResponseWriter, r *http.Request, hd HandlerData) error {
 		source = z.File.Title()
 
 		// Search for query in WIKI
-		res = searchSingle(query, z)
+		res, resultText, nbResults, nbPages = searchSingle(query, nbResultsPerPage, resultsUntil, z)
+	}
+
+	var previousPage int
+	var nextPage int
+
+	if actualPageNb != 1 {
+		previousPage = actualPageNb - 1
+	}
+
+	if  nbResults - (nbResultsPerPage * (actualPageNb)) > 0 {
+		nextPage = actualPageNb + 1
 	}
 
 	favCache := make(map[string]string)
@@ -137,7 +214,9 @@ func Search(w http.ResponseWriter, r *http.Request, hd HandlerData) error {
 		}
 	}
 
-	log.Info("Searching took ", time.Since(start))
+	timeTook := time.Since(start)
+
+	log.Info(resultText, " in ", timeTook)
 
 	// Redirect to wiki page if only
 	// one search result was found
@@ -152,6 +231,12 @@ func Search(w http.ResponseWriter, r *http.Request, hd HandlerData) error {
 			Results:      results,
 			QueryText:    query,
 			SearchSource: source,
+			ResultText:   resultText,
+			TimeTook:     timeTook,
+			ActualPageNb: actualPageNb,
+			NbPages:      nbPages,
+			PreviousPage: previousPage,
+			NextPage:     nextPage,
 		},
 	})
 }
