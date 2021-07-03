@@ -13,18 +13,18 @@ A modern zim fileserver which can handle multiple zim files by serving a beautif
 </thead>
 <tr>
     <td>
-        <img src=".img/home.png" width="auto" height="399px"/>
+        <img src=".img/home.png" width="auto" height="259px"/>
     </td>
     <td>
-        <img src=".img/home_mobile.png" width="auto" height="399px"/>
+        <img src=".img/home_mobile.png" width="auto" height="259px"/>
     </td>
 </tr>
 <tr>
     <td>
-        <img src=".img/wiki.png" width="auto" height="399px"/>
+        <img src=".img/wiki.png" width="auto" height="259px"/>
     </td>
     <td>
-        <img src=".img/wiki_mobile.png" width="auto" height="399px"/>
+        <img src=".img/wiki_mobile.png" width="auto" height="259px"/>
     </td>
 </tr>
 </table>
