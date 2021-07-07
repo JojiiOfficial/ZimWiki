@@ -6,6 +6,7 @@ import (
 	"path"
 	"time"
 	"strings"
+	"github.com/chai2010/gettext-go"
 )
 
 var (
@@ -70,6 +71,10 @@ type SearchResult struct {
 	Link  string
 }
 
+func translate(input string) string {
+	return gettext.PGettext("", input)
+}
+
 // 						    //
 // --- Template functions   //
 // 						    //
@@ -95,9 +100,15 @@ func serveTemplate(tmpFile string, w http.ResponseWriter, r *http.Request, btd T
 		lang = strings.Split(lang, "-")[0]
 	}
 
+	gettext.BindLocale(gettext.New("ZimWiki", "locale"))
+
+	funcMap := template.FuncMap{
+		"gettext": translate,
+	}
+
 	if !has {
 		// Parse if not in cache
-		tmpl, err = template.New(tmplName).ParseFiles(BaseTemplate, tmpFile)
+		tmpl, err = template.New(tmplName).Funcs(funcMap).ParseFiles(BaseTemplate, tmpFile)
 		if err != nil {
 			return err
 		}
@@ -109,6 +120,8 @@ func serveTemplate(tmpFile string, w http.ResponseWriter, r *http.Request, btd T
 	if len(btd.Wiki) == 0 {
 		btd.Wiki = "-"
 	}
+
+	gettext.SetLanguage(lang)
 
 	// Execute template
 	return tmpl.ExecuteTemplate(w, path.Base(BaseTemplate), btd)
