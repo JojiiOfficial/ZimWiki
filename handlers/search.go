@@ -225,7 +225,7 @@ func Search(w http.ResponseWriter, r *http.Request, hd HandlerData) error {
 		return nil
 	}
 
-	return serveTemplate(SearchTemplate, w, TemplateData{
+	return serveTemplate(SearchTemplate, w, r, TemplateData{
 		Wiki: wiki,
 		SearchTemplateData: SearchTemplateData{
 			Results:      results,

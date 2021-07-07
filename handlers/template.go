@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"path"
 	"time"
+	"strings"
 )
 
 var (
@@ -74,7 +75,7 @@ type SearchResult struct {
 // 						    //
 
 // Load and execute
-func serveTemplate(tmpFile string, w http.ResponseWriter, btd TemplateData) error {
+func serveTemplate(tmpFile string, w http.ResponseWriter, r *http.Request, btd TemplateData) error {
 	var err error
 	tmplName := path.Base(tmpFile)
 
@@ -82,6 +83,17 @@ func serveTemplate(tmpFile string, w http.ResponseWriter, btd TemplateData) erro
 
 	// Find in cache
 	tmpl, has := TemplateCache[tmplName]
+
+	// Get the Accept-Language header from the HTTP request
+	headerLang := r.Header.Get("Accept-Language")
+
+	// Keep only the first element
+	lang := strings.Split(headerLang, ",")[0]
+
+	// e.g. en-GB -> en
+	if strings.Contains(lang, "-") {
+		lang = strings.Split(lang, "-")[0]
+	}
 
 	if !has {
 		// Parse if not in cache
