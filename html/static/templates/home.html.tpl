@@ -1,11 +1,14 @@
 {{ define "content" }}
 
-    <h1>Available Wikis</h1>
+    {{ if not .Cards }}
+        <h1>No wiki available</h1>
+    {{ else if eq (len .Cards) 1 }}
+        <h1>{{ len .Cards }} Available Wiki</h1>
+    {{ else }}
+        <h1>{{ len .Cards }} Available Wikis</h1>
+    {{ end }}
 
     <div class="justify-content-md-center row" id="ContentContainer">
-
-            {{/* Display message if no wiki was found */}}
-            {{if not .Cards}} <p><i class="fa fa-frown-o fa-fw" aria-hidden="true"></i> Nothing here yet.</p> {{end}}
 
             {{/* Add all available cards */}}
             {{ range .Cards }}
