@@ -7,6 +7,7 @@ replace github.com/tim-st/go-zim v0.1.2 => github.com/JojiiOfficial/go-zim v0.1.
 require (
 	github.com/JojiiOfficial/gaw v1.2.8
 	github.com/agext/levenshtein v1.2.3
+	github.com/chai2010/gettext-go v1.0.2 // indirect
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/gorilla/mux v1.8.0
 	github.com/klauspost/compress v1.13.1
