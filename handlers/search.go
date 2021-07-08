@@ -15,7 +15,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func searchSingle(query string, nbResultsPerPage int, resultsUntil int, wiki *zim.File) ([]zim.SRes, string, int, int) {
+func searchSingle(query string, nbResultsPerPage int, resultsUntil int, wiki *zim.File) ([]zim.SRes, int, int) {
 	// Search entries
 	entries := wiki.SearchForEntry(query)
 	// Sort them by similarity
@@ -47,18 +47,11 @@ func searchSingle(query string, nbResultsPerPage int, resultsUntil int, wiki *zi
 	// Calculate the total number of pages
 	nbPages := int(math.Ceil(float64(len(entries)) / float64(nbResultsPerPage)))
 
-	// Know the number of results
-	resultText := "No result"
-
-	if len(entries) != 0 {
-		resultText = strconv.Itoa(len(entries)) + " results"
-	}
-
-	return entries[resultsStart:resultsUntil], resultText, len(entries), nbPages
+	return entries[resultsStart:resultsUntil], len(entries), nbPages
 }
 
 // Search in all available wikis
-func searchGlobal(query string, nbResultsPerPage int, resultsUntil int, handler *zim.Handler) ([]zim.SRes, string, int, int) {
+func searchGlobal(query string, nbResultsPerPage int, resultsUntil int, handler *zim.Handler) ([]zim.SRes, int, int) {
 	var results []zim.SRes
 	mx := sync.Mutex{}
 	wg := sync.WaitGroup{}
@@ -111,14 +104,7 @@ func searchGlobal(query string, nbResultsPerPage int, resultsUntil int, handler 
 	// Calculate the total number of pages
 	nbPages := int(math.Ceil(float64(len(results)) / float64(nbResultsPerPage)))
 
-	// Know the number of results
-	resultText := "No result"
-
-	if len(results) != 0 {
-		resultText = strconv.Itoa(len(results)) + " results"
-	}
-
-	return results[resultsStart:resultsUntil], resultText, len(results), nbPages
+	return results[resultsStart:resultsUntil], len(results), nbPages
 }
 
 // Search handles serach requests
@@ -156,7 +142,6 @@ func Search(w http.ResponseWriter, r *http.Request, hd HandlerData) error {
 
 	var res []zim.SRes
 	var source string
-	var resultText string
 	var nbResults int
 	var nbPages int
 
@@ -164,7 +149,7 @@ func Search(w http.ResponseWriter, r *http.Request, hd HandlerData) error {
 	if wiki == "-" {
 		source = "global search"
 
-		res, resultText, nbResults, nbPages = searchGlobal(query, nbResultsPerPage, resultsUntil, hd.ZimService)
+		res, nbResults, nbPages = searchGlobal(query, nbResultsPerPage, resultsUntil, hd.ZimService)
 	} else {
 		// Wiki search
 		z := hd.ZimService.FindWikiFile(wiki)
@@ -175,7 +160,7 @@ func Search(w http.ResponseWriter, r *http.Request, hd HandlerData) error {
 		source = z.File.Title()
 
 		// Search for query in WIKI
-		res, resultText, nbResults, nbPages = searchSingle(query, nbResultsPerPage, resultsUntil, z)
+		res, nbResults, nbPages = searchSingle(query, nbResultsPerPage, resultsUntil, z)
 	}
 
 	var previousPage int
@@ -216,7 +201,7 @@ func Search(w http.ResponseWriter, r *http.Request, hd HandlerData) error {
 
 	timeTook := time.Since(start)
 
-	log.Info(resultText, " in ", timeTook)
+	log.Info(nbResults, " in ", timeTook)
 
 	// Redirect to wiki page if only
 	// one search result was found
@@ -231,7 +216,7 @@ func Search(w http.ResponseWriter, r *http.Request, hd HandlerData) error {
 			Results:      results,
 			QueryText:    query,
 			SearchSource: source,
-			ResultText:   resultText,
+			NbResults:    nbResults,
 			TimeTook:     timeTook,
 			ActualPageNb: actualPageNb,
 			NbPages:      nbPages,

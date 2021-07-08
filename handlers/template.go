@@ -55,7 +55,7 @@ type SearchTemplateData struct {
 	SearchSource string
 	QueryText    string
 	Results      []SearchResult
-	ResultText   string
+	NbResults    int
 	TimeTook     time.Duration
 	ActualPageNb int
 	NbPages      int
