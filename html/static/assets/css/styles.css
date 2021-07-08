@@ -1,6 +1,6 @@
 body {
 	overflow-x: hidden;
-	font-family: 'Linux Libertine','Georgia','Times',serif;
+	font-family: sans-serif;
 }
 
 .header img {
@@ -16,9 +16,13 @@ body {
 	left: 10px;
 }
 
+#name, h1, h2, h3, h4, h5, h6 {
+	font-family: 'Linux Libertine','Georgia','Times',serif;
+}
+
 h1, h2, h5, h6 {
 	text-align: center;
-	margin-bottom: 1.0rem;
+	margin-bottom: 0.8rem;
 }
 
 .card-body a {
