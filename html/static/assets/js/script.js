@@ -7,7 +7,7 @@ if (typeof queryText !== 'undefined') {
 }
 
 if (wiki == "-") {
-	document.getElementById("sQuery").placeholder = "Search anywhere";
+	document.getElementById("sQuery").placeholder = "Search everywhere";
 } else {
 	document.getElementById("sQuery").placeholder = "Search in this wiki";
 }
