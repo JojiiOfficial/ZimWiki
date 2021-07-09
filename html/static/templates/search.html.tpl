@@ -4,12 +4,21 @@
             var queryText = '{{ .QueryText }}'
         </script>
 
-        <h1> <i class="fa fa-search fa-fw" aria-hidden="true"></i> Search results for "{{ .QueryText }}" </h1>
+        <h1> <i class="fa fa-search fa-fw" aria-hidden="true"></i> {{ gettext "Search results for" }} "{{ .QueryText }}" </h1>
         <h5>
-            [in {{ .SearchSource }}]
+            {{ if eq .SearchSource "global search" }}
+                [{{ gettext "global search" }}]
+            {{ else }}
+                [{{ gettext "in" }} {{ .SearchSource }}]
+            {{ end }}
         </h5>
         <h6>
-            {{ .ResultText }} in {{ .TimeTook }}
+            {{ if eq .NbResults 0 }}
+                {{ gettext "No result" }}
+            {{ else }}
+                {{ .NbResults }} {{ gettext "results" }} 
+            {{ end }}
+            ({{ .TimeTook }})
         </h6>
 
 
@@ -26,7 +35,7 @@
                                     <h4 class="card-title" style="margin-bottom:0">{{ .Title }}</h4>
                                 </div>
                                 <div class="card-body">
-                                    <a class="btn btn-outline-secondary" href="{{ .Link }}"><i class="fa fa-book fa-fw" aria-hidden="true"></i> Read</a>
+                                    <a class="btn btn-outline-secondary" href="{{ .Link }}"><i class="fa fa-book fa-fw" aria-hidden="true"></i> {{ gettext "Read" }}</a>
                                 </div>
                             </div>
                         </div>
@@ -35,24 +44,24 @@
 
                 </div>
 
-                <div class="d-flex justify-content-between bd-highlight mb-3">
-
+                <div class="container position-absolute bottom-0 start-50 translate-middle-x py-2 d-flex justify-content-between bd-highlight mb-3" style="margin-bottom: 0 !important; padding: 0 !important;">
+                    
                     <div class="p-2 bd-highlight">
                         {{ if .PreviousPage }}
                             <form method="POST" action="/search/{{ .Wiki }}/" id="previousPageForm">
                                 <input type="hidden" id="sQuery" name="sQuery" value="{{ .QueryText }}">
                                 <input type="hidden" id="pageNumber" name="pageNumber" value="{{ .PreviousPage }}">
-                                <button class="btn btn-outline-secondary" type="submit"><i class="fa fa-arrow-circle-left fa-fw" aria-hidden="true"></i> Previous page</button>
+                                <button class="btn btn-outline-secondary" type="submit"><i class="fa fa-arrow-circle-left fa-fw" aria-hidden="true"></i> {{ gettext "Previous page" }}</button>
                             </form>
                         {{ end }}
                         
                         {{ if not .PreviousPage }}
-                            <button class="btn btn-outline-secondary disabled" type="button" aria-disabled="true"><i class="fa fa-arrow-circle-left fa-fw" aria-hidden="true"></i> Previous page</button>
+                            <button class="btn btn-outline-secondary disabled" type="button" aria-disabled="true"><i class="fa fa-arrow-circle-left fa-fw" aria-hidden="true"></i> {{ gettext "Previous page" }}</button>
                         {{ end }}
                     </div>
 
-                    <div class="p-2 bd-highlight">
-                        Page {{ .ActualPageNb }}/{{ .NbPages }}
+                    <div class="p-2 bd-highlight text-center align-self-center">
+                        {{ gettext "Page" }} {{ .ActualPageNb }}/{{ .NbPages }}
                     </div>
 
                     <div class="p-2 bd-highlight">
@@ -60,12 +69,12 @@
                             <form method="POST" action="/search/{{ .Wiki }}/" id="nextPageForm">
                                 <input type="hidden" id="sQuery" name="sQuery" value="{{ .QueryText }}">
                                 <input type="hidden" id="pageNumber" name="pageNumber" value="{{ .NextPage }}">
-                                <button class="btn btn-outline-secondary" type="submit">Next page <i class="fa fa-arrow-circle-right fa-fw" aria-hidden="true"></i></button>
+                                <button class="btn btn-outline-secondary" type="submit">{{ gettext "Next page" }} <i class="fa fa-arrow-circle-right fa-fw" aria-hidden="true"></i></button>
                             </form>
                         {{ end }}
                         
                         {{ if not .NextPage }}
-                            <button class="btn btn-outline-secondary disabled" type="button" aria-disabled="true">Next page <i class="fa fa-arrow-circle-right fa-fw" aria-hidden="true"></i></button>
+                            <button class="btn btn-outline-secondary disabled" type="button" aria-disabled="true">{{ gettext "Next page" }} <i class="fa fa-arrow-circle-right fa-fw" aria-hidden="true"></i></button>
                         {{ end }}
                     </div>
 
