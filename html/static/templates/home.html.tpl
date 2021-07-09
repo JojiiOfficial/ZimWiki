@@ -32,7 +32,7 @@
 
     </div>
 
-    <div class="container position-absolute bottom-0 start-50 translate-middle-x py-2 d-flex justify-content-between bd-highlight mb-3" style="margin-bottom: 0 !important; padding: 0 !important;">
+    <div class="container position-absolute bottom-0 start-50 translate-middle-x py-2 d-flex justify-content-between bd-highlight mb-3" style="margin-bottom: 0 !important;">
         <small class="text-muted">{{ .Version }} ({{ .BuildTime }})</small>
     </div>
 
