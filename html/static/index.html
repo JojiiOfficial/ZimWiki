@@ -13,12 +13,22 @@
         var wiki = '{{ .Wiki }}'
         var namespace = '{{ .Namespace }}'
     </script>
+
+    {{ if eq .Wiki "-" }}
+        <script>
+            var searchPlaceholder = '{{ gettext "Search globally" }}'
+        </script>
+    {{else}}
+        <script>
+            var searchPlaceholder = '{{ gettext "Search in this wiki" }}'
+        </script>
+    {{end}}
 </head>
 
 <body>
 
     <noscript>
-        <h1><i class="fa fa-frown-o fa-fw" aria-hidden="true"></i> JavaScript is off. ZimWiki needs JavaScript support to work.</h1>
+        <h1><i class="fa fa-frown-o fa-fw" aria-hidden="true"></i> {{ gettext "JavaScript is off. ZimWiki needs JavaScript support to work." }}</h1>
     </noscript>
 
     <div class="container no-js">
@@ -27,7 +37,7 @@
                 <div class="row flex-nowrap justify-content-between align-items-center pb-2 mb-3">
                     <div class="col-4 pt-1">
                         <a href="/" class="d-flex align-items-center text-dark text-decoration-none">
-                            <span class="fs-4">ZimWiki</span>
+                            <span class="fs-4" id="name">ZimWiki</span>
                         </a>
                     </div>
                     <div class="col-8 d-flex justify-content-end align-items-center">
