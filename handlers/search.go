@@ -201,7 +201,17 @@ func Search(w http.ResponseWriter, r *http.Request, hd HandlerData) error {
 
 	timeTook := time.Since(start)
 
-	log.Info(nbResults, " in ", timeTook)
+	var resultText string
+
+	if (nbResults == 0) {
+		resultText = "No result"
+	} else if (nbResults == 1) {
+		resultText = "1 result"
+	} else {
+		resultText = strconv.Itoa(nbResults) + " results"
+	}
+
+	log.Info(resultText, " in ", timeTook)
 
 	// Redirect to wiki page if only
 	// one search result was found
