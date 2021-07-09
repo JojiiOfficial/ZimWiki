@@ -1,11 +1,11 @@
 {{ define "content" }}
 
     {{ if not .Cards }}
-        <h1>No wiki available</h1>
+        <h1><i class="fa fa-frown-o fa-fw" aria-hidden="true"></i> {{ gettext "No wiki available" }}</h1>
     {{ else if eq (len .Cards) 1 }}
-        <h1>{{ len .Cards }} Available Wiki</h1>
+        <h1><i class="fa fa-book fa-fw" aria-hidden="true"></i> {{ len .Cards }} {{ gettext "Available Wiki" }}</h1>
     {{ else }}
-        <h1>{{ len .Cards }} Available Wikis</h1>
+        <h1><i class="fa fa-book fa-fw" aria-hidden="true"></i> {{ len .Cards }} {{ gettext "Available Wikis" }}</h1>
     {{ end }}
 
     <div class="justify-content-md-center row" id="ContentContainer">
@@ -24,12 +24,16 @@
                                     <p>{{ .Text }}</p>
                                 </div>
                             </div>
-                            <a class="btn btn-outline-secondary" href="{{ .Link }}"><i class="fa fa-book fa-fw" aria-hidden="true"></i> Read</a>
+                            <a class="btn btn-outline-secondary" href="{{ .Link }}"><i class="fa fa-book fa-fw" aria-hidden="true"></i> {{ gettext "Read" }}</a>
                         </div>
                     </div>
                 </div>
             {{ end }}
 
+    </div>
+
+    <div class="container position-absolute bottom-0 start-50 translate-middle-x py-2 d-flex justify-content-between bd-highlight mb-3" style="margin-bottom: 0 !important; padding: 0 !important;">
+        <small class="text-muted">{{ .Version }} ({{ .BuildTime }})</small>
     </div>
 
 {{ end }}
