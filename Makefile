@@ -1,6 +1,11 @@
+PACKAGE=github.com/JojiiOfficial/ZimWiki/handlers
+VERSION=`git describe --tags`
+BUILDTIME=`date +%FT%T%z`
+LDFLAGS=-ldflags "-X ${PACKAGE}.version=${VERSION} -X ${PACKAGE}.buildTime=${BUILDTIME}"
+
 build:
 	go mod download
-	go build -o ZimWiki
+	go build ${LDFLAGS} -o ZimWiki
 
 default: build
 
@@ -46,6 +51,7 @@ endif
 	@echo Uninstalled successfully!
 
 clean:
+	go clean
 	rm -f ZimWiki.1
 	rm -f ZimWiki
 	rm -f main

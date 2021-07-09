@@ -42,7 +42,9 @@ type HomeCards struct {
 // HomeTemplateData contain data
 // for the home template
 type HomeTemplateData struct {
-	Cards []HomeCards
+	Cards       []HomeCards
+	Version     string
+	BuildTime   string
 }
 
 // WikiViewTemplateData data for wiki view page
