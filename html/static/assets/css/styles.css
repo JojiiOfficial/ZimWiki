@@ -9,6 +9,14 @@ body {
 	margin-bottom: 80px;
 }
 
+.form-control {
+	border: 1px solid #00000020;
+}
+
+.btn-outline-secondary, .btn-secondary {
+	border-color: #00000020;
+}
+
 .header img {
 	float: left;
 	width: 100px;
@@ -38,10 +46,6 @@ h1, h2, h5, h6 {
 .card:hover {
     box-shadow: 5px 6px 6px 2px #e9ecef;
     transform: scale(1.03);
-}
-
-.card-body a {
-	float: right;
 }
 
 .iframe-container {
