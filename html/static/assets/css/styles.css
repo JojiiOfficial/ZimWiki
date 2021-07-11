@@ -31,6 +31,15 @@ h1, h2, h5, h6 {
 	margin-bottom: 0.8rem;
 }
 
+.card {
+    transition: all 0.2s ease;
+}
+
+.card:hover {
+    box-shadow: 5px 6px 6px 2px #e9ecef;
+    transform: scale(1.03);
+}
+
 .card-body a {
 	float: right;
 }
