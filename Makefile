@@ -1,11 +1,6 @@
-PACKAGE=github.com/JojiiOfficial/ZimWiki/handlers
-VERSION=`git describe --tags`
-BUILDTIME=`date +%FT%T%z`
-LDFLAGS=-ldflags "-X ${PACKAGE}.version=${VERSION} -X ${PACKAGE}.buildTime=${BUILDTIME}"
-
 build:
 	go mod download
-	go build ${LDFLAGS} -o ZimWiki
+	go build -ldflags "-X github.com/JojiiOfficial/ZimWiki/handlers.version=`git describe --tags` -X github.com/JojiiOfficial/ZimWiki/handlers.buildTime=`date +%FT%T%z`" -o ZimWiki
 
 default: build
 
