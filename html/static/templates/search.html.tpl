@@ -24,7 +24,7 @@
 
             {{ if .Results }}
 
-                <div class="justify-content-md-center row" id="ContentContainer">
+                <div class="justify-content-md-center row">
 
                     {{ range .Results }}
 

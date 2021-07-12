@@ -8,7 +8,7 @@
         <h1><i class="fa fa-book fa-fw" aria-hidden="true"></i> {{ len .Cards }} {{ gettext "Available Wikis" }}</h1>
     {{ end }}
 
-    <div class="justify-content-md-center row" id="ContentContainer">
+    <div class="justify-content-md-center row">
 
             {{/* Add all available cards */}}
             {{ range .Cards }}
