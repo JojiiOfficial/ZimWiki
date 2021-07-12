@@ -94,7 +94,7 @@ func serveTemplate(tmpFile string, w http.ResponseWriter, r *http.Request, btd T
 	// Get the Accept-Language header from the HTTP request
 	headerLang := r.Header.Get("Accept-Language")
 
-	// Keep only the first element
+	// Keep only the first element of the array
 	lang := strings.Split(headerLang, ",")[0]
 
 	// e.g. en-GB -> en
@@ -102,6 +102,7 @@ func serveTemplate(tmpFile string, w http.ResponseWriter, r *http.Request, btd T
 		lang = strings.Split(lang, "-")[0]
 	}
 
+	// Get locale
 	gettext.BindLocale(gettext.New("ZimWiki", "locale"))
 
 	funcMap := template.FuncMap{
