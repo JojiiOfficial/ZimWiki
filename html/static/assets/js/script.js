@@ -6,11 +6,7 @@ if (typeof queryText !== 'undefined') {
 	document.getElementById("sQuery").value = queryText;
 }
 
-if (wiki == "-") {
-	document.getElementById("sQuery").placeholder = "Search everywhere";
-} else {
-	document.getElementById("sQuery").placeholder = "Search in this wiki";
-}
+document.getElementById("sQuery").placeholder = searchPlaceholder;
 
 // For all those vim lovers
 document.addEventListener('keyup', (e) => {

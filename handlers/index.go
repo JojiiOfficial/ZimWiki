@@ -6,6 +6,11 @@ import (
 	"github.com/JojiiOfficial/ZimWiki/zim"
 )
 
+var (
+	version string
+    buildTime string
+)
+
 // Index handle index route
 func Index(w http.ResponseWriter, r *http.Request, hd HandlerData) error {
 	var cards []HomeCards
@@ -35,9 +40,11 @@ func Index(w http.ResponseWriter, r *http.Request, hd HandlerData) error {
 	// Cache files
 	w.Header().Set("Cache-Control", "max-age=31536000, public")
 
-	return serveTemplate(HomeTemplate, w, TemplateData{
+	return serveTemplate(HomeTemplate, w, r, TemplateData{
 		HomeTemplateData: HomeTemplateData{
-			Cards: cards,
+			Cards:     cards,
+			Version:   version,
+			BuildTime: buildTime,
 		},
 	})
 }

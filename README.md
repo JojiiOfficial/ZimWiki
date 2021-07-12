@@ -32,7 +32,7 @@ A modern zim fileserver which can handle multiple zim files by serving a beautif
  
 
 # Installation
-- Install go and compile it using `go build`
+- Install Go and compile it using `make build`
 or
 - Download the latest release
 

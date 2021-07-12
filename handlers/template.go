@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"path"
 	"time"
+	"strings"
+	"github.com/chai2010/gettext-go"
 )
 
 var (
@@ -40,7 +42,9 @@ type HomeCards struct {
 // HomeTemplateData contain data
 // for the home template
 type HomeTemplateData struct {
-	Cards []HomeCards
+	Cards       []HomeCards
+	Version     string
+	BuildTime   string
 }
 
 // WikiViewTemplateData data for wiki view page
@@ -53,7 +57,7 @@ type SearchTemplateData struct {
 	SearchSource string
 	QueryText    string
 	Results      []SearchResult
-	ResultText   string
+	NbResults    int
 	TimeTook     time.Duration
 	ActualPageNb int
 	NbPages      int
@@ -69,12 +73,16 @@ type SearchResult struct {
 	Link  string
 }
 
+func translate(input string) string {
+	return gettext.PGettext("", input)
+}
+
 // 						    //
 // --- Template functions   //
 // 						    //
 
 // Load and execute
-func serveTemplate(tmpFile string, w http.ResponseWriter, btd TemplateData) error {
+func serveTemplate(tmpFile string, w http.ResponseWriter, r *http.Request, btd TemplateData) error {
 	var err error
 	tmplName := path.Base(tmpFile)
 
@@ -83,9 +91,27 @@ func serveTemplate(tmpFile string, w http.ResponseWriter, btd TemplateData) erro
 	// Find in cache
 	tmpl, has := TemplateCache[tmplName]
 
+	// Get the Accept-Language header from the HTTP request
+	headerLang := r.Header.Get("Accept-Language")
+
+	// Keep only the first element of the array
+	lang := strings.Split(headerLang, ",")[0]
+
+	// e.g. en-GB -> en
+	if strings.Contains(lang, "-") {
+		lang = strings.Split(lang, "-")[0]
+	}
+
+	// Get locale
+	gettext.BindLocale(gettext.New("ZimWiki", "locale"))
+
+	funcMap := template.FuncMap{
+		"gettext": translate,
+	}
+
 	if !has {
 		// Parse if not in cache
-		tmpl, err = template.New(tmplName).ParseFiles(BaseTemplate, tmpFile)
+		tmpl, err = template.New(tmplName).Funcs(funcMap).ParseFiles(BaseTemplate, tmpFile)
 		if err != nil {
 			return err
 		}
@@ -97,6 +123,8 @@ func serveTemplate(tmpFile string, w http.ResponseWriter, btd TemplateData) erro
 	if len(btd.Wiki) == 0 {
 		btd.Wiki = "-"
 	}
+
+	gettext.SetLanguage(lang)
 
 	// Execute template
 	return tmpl.ExecuteTemplate(w, path.Base(BaseTemplate), btd)
