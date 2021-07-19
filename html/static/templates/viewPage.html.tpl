@@ -1,5 +1,13 @@
 {{ define "content" }}
 
+<div id="iframeSpinner">
+        <div class="d-flex flex-column min-vh-100 justify-content-center align-items-center">
+            <div class="spinner-border" role="status">
+              <span class="visually-hidden">{{ gettext "Loading..." }}</span>
+            </div>
+        </div>
+    </div>
+
 <div class="iframe-container">
     <iframe type="text/html" src="{{ .Source }}" target="_parent" id="wikiContent" frameBorder="0" onload="fixURLs()">
     </iframe>
@@ -8,9 +16,18 @@
 <script src="/assets/js/jquery.min.js"></script>
 
 <script>
+
     $( "iframe" ).on('load',function() {
         // Get iframe title
         document.title = document.getElementById("wikiContent").contentDocument.title;
+
+        // Some animations when the iframe is loaded
+        document.getElementsByClassName("iframe-container")[0].style.transition = "opacity 0.4s";
+        document.getElementsByClassName("iframe-container")[0].style.opacity = "1";
+        document.getElementsByClassName("iframe-container")[0].style.pointerEvents = "all";
+        document.getElementById("iframeSpinner").style.transition = "opacity 0.4s";
+        document.getElementById("iframeSpinner").style.opacity = "0";
+        document.getElementById("iframeSpinner").style.visibility = "hidden";
     });
 
     function fixURLs(){
