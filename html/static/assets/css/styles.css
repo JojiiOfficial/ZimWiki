@@ -9,6 +9,22 @@ body {
 	margin-bottom: 80px;
 }
 
+.spinner-container {
+	position: absolute;
+	visibility: hidden;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	z-index: 9999;
+	opacity: 0;
+}
+
+.spinner-border {
+	width: 3rem;
+	height: 3rem;
+}
+
 .form-control {
 	border: 1px solid #00000020;
 }
@@ -31,7 +47,7 @@ body {
 }
 
 #name, h1, h2, h3, h4, h5, h6 {
-	font-family: 'Linux Libertine','Georgia','Times',serif;
+	font-family: 'Linux Libertine', 'Georgia', 'Times', serif;
 }
 
 h1, h2, h5, h6 {
@@ -40,12 +56,21 @@ h1, h2, h5, h6 {
 }
 
 .card {
-    transition: all 0.2s ease;
+	transition: all 0.2s ease;
 }
 
 .card:hover {
-    box-shadow: 5px 6px 6px 2px #e9ecef;
-    transform: scale(1.03);
+	box-shadow: 5px 6px 6px 2px #e9ecef;
+	transform: scale(1.03);
+}
+
+#iframeSpinner {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	opacity: 1;
 }
 
 .iframe-container {
@@ -54,6 +79,8 @@ h1, h2, h5, h6 {
 	left: 0;
 	right: 0;
 	bottom: 0;
+	opacity: 0;
+	pointer-events: none;
 }
 
 .iframe-container #wikiContent {
