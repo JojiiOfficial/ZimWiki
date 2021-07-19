@@ -31,7 +31,15 @@
         <h1><i class="fa fa-frown-o fa-fw" aria-hidden="true"></i> {{ gettext "JavaScript is off. ZimWiki needs JavaScript support to work." }}</h1>
     </noscript>
 
-    <div class="container no-js">
+    <div class="spinner-container">
+        <div class="d-flex flex-column min-vh-100 justify-content-center align-items-center">
+            <div class="spinner-border" role="status">
+              <span class="visually-hidden">{{ gettext "Loading..." }}</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="container no-js" id="main">
 
         <header class="py-2">
                 <div class="row flex-nowrap justify-content-between align-items-center pb-2 mb-3">
@@ -43,8 +51,8 @@
                     <div class="col-8 d-flex justify-content-end align-items-center">
                         <form method="POST" action="/search/{{ .Wiki }}/" id="searchform">
                             <div class="input-group">
-                                <input type="text" class="form-control" id="sQuery" name="sQuery" placeholder="Search" required>
-                                <button class="btn btn-outline-secondary" type="submit"><i class="fa fa-search fa-fw" aria-hidden="true"></i></button>
+                                <input type="text" class="form-control" id="sQuery" name="sQuery" placeholder="Search" minlength="2" required>
+                                <button class="btn btn-outline-secondary" id="sQueryBtn" type="submit"><i class="fa fa-search fa-fw" aria-hidden="true"></i></button>
                             </div>
                         </form>
                     </div>
