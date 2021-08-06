@@ -1,6 +1,6 @@
 build:
 	go mod download
-	go build -o ZimWiki
+	go build -ldflags "-X github.com/JojiiOfficial/ZimWiki/handlers.version=`git describe --tags` -X github.com/JojiiOfficial/ZimWiki/handlers.buildTime=`date +%FT%T%z`" -o ZimWiki
 
 default: build
 
@@ -46,6 +46,7 @@ endif
 	@echo Uninstalled successfully!
 
 clean:
+	go clean
 	rm -f ZimWiki.1
 	rm -f ZimWiki
 	rm -f main

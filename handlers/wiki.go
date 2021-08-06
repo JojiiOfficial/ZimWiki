@@ -176,7 +176,7 @@ func WikiView(w http.ResponseWriter, r *http.Request, hd HandlerData) error {
 	// Cache files
 	w.Header().Set("Cache-Control", "max-age=31536000, public")
 
-	return serveTemplate(WikiPageTemplate, w, TemplateData{
+	return serveTemplate(WikiPageTemplate, w, r, TemplateData{
 		FavIcon:      favurl,
 		Favtype:      favType,
 		Wiki:         z.GetID(),

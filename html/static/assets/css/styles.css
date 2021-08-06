@@ -1,6 +1,20 @@
+html {
+	position: relative;
+	min-height: 100%;
+}
+
 body {
 	overflow-x: hidden;
-	font-family: 'Linux Libertine','Georgia','Times',serif;
+	font-family: sans-serif;
+	margin-bottom: 80px;
+}
+
+.form-control {
+	border: 1px solid #00000020;
+}
+
+.btn-outline-secondary, .btn-secondary {
+	border-color: #00000020;
 }
 
 .header img {
@@ -16,13 +30,13 @@ body {
 	left: 10px;
 }
 
-h1, h2, h5, h6 {
-	text-align: center;
-	margin-bottom: 1.0rem;
+#name, h1, h2, h3, h4, h5, h6 {
+	font-family: 'Linux Libertine','Georgia','Times',serif;
 }
 
-.card-body a {
-	float: right;
+h1, h2, h5, h6 {
+	text-align: center;
+	margin-bottom: 0.8rem;
 }
 
 .iframe-container {
@@ -38,10 +52,6 @@ h1, h2, h5, h6 {
 	width: 100%;
 	height: 100%;
 	border: none;
-}
-
-#noResult {
-	text-align: center;
 }
 
 .no-js {
