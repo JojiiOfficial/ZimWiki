@@ -1,0 +1,82 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-07-08 00:02+0200\n"
+"PO-Revision-Date: 2021-08-05 13:01+0200\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.4.3\n"
+"Last-Translator: \n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Language: fr\n"
+
+#: html/static/index.html:31
+msgid "JavaScript is off. ZimWiki needs JavaScript support to work."
+msgstr "JavaScript ist deaktiviert. Damit das ZimWiki einwandfrei laufen kann, muss JavaScript aktiviert sein."
+
+#: html/static/index.html:23
+msgid "Search in this wiki"
+msgstr "Suche in diesem Wiki"
+
+#: html/static/index.html:19
+msgid "Search globally"
+msgstr "Suche global"
+
+#: html/static/templates/search.html.tpl:76
+#: html/static/templates/search.html.tpl:71
+msgid "Next page"
+msgstr "Nächste Seite"
+
+#: html/static/templates/search.html.tpl:63
+msgid "Page"
+msgstr "Seite"
+
+#: html/static/templates/search.html.tpl:58
+#: html/static/templates/search.html.tpl:53
+msgid "Previous page"
+msgstr "Vorherige Seite"
+
+#: html/static/templates/search.html.tpl:37
+#: html/static/templates/home.html.tpl:27
+msgid "Read"
+msgstr "Lesen"
+
+#: html/static/templates/search.html.tpl:19
+msgid "results"
+msgstr "Ergebnisse"
+
+#: html/static/templates/search.html.tpl:17
+msgid "No result"
+msgstr "Keine Ergebnisse"
+
+#: html/static/templates/search.html.tpl:12
+msgid "in"
+msgstr ""
+
+#: html/static/templates/search.html.tpl:10
+msgid "global search"
+msgstr "Globale Suche"
+
+#: html/static/templates/search.html.tpl:7
+msgid "Search results for"
+msgstr "Suchergebnisse für"
+
+#: html/static/templates/home.html.tpl:8
+msgid "Available Wikis"
+msgstr "Verfügbare Wikis"
+
+#: html/static/templates/home.html.tpl:6
+msgid "Available Wiki"
+msgstr "Verfügbares Wiki"
+
+#: html/static/templates/home.html.tpl:4
+msgid "No wiki available"
+msgstr "Keine Wikis vorhanden"

@@ -32,8 +32,10 @@
 
     </div>
 
-    <div class="container position-absolute bottom-0 start-50 translate-middle-x py-2 d-flex justify-content-between bd-highlight mb-3" style="margin-bottom: 0 !important;">
-        <small class="text-muted">{{ .Version }} ({{ .BuildTime }})</small>
-    </div>
+    {{ if or .Version .BuildTime }}
+        <div class="container position-absolute bottom-0 start-50 translate-middle-x py-2 d-flex justify-content-between bd-highlight mb-3" style="margin-bottom: 0 !important;">
+            <small class="text-muted">{{ if .Version }}{{ .Version }}{{ end }} {{ if .BuildTime }}({{ .BuildTime }}){{end}}</small>
+        </div>
+    {{ end }}
 
 {{ end }}
