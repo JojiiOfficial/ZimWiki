@@ -10,7 +10,7 @@ body {
 }
 
 .spinner-container {
-	position: absolute;
+	position: fixed;
 	visibility: hidden;
 	top: 0;
 	bottom: 0;
