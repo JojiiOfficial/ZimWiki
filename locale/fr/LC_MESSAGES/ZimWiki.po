@@ -7,67 +7,71 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-07-08 00:02+0200\n"
-"PO-Revision-Date: 2021-08-10 12:29+0200\n"
+"POT-Creation-Date: 2021-07-15 23:49+0200\n"
+"PO-Revision-Date: 2021-08-16 23:23+0200\n"
+"Last-Translator: \n"
 "Language-Team: \n"
+"Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.4.3\n"
-"Last-Translator: \n"
+"X-Generator: Poedit 3.0\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"Language: fr\n"
-
-#: html/static/index.html:31
-msgid "JavaScript is off. ZimWiki needs JavaScript support to work."
-msgstr "JavaScript est désactivé. ZimWiki a besoin de JavaScript pour fonctionner."
-
-#: html/static/index.html:23
-msgid "Search in this wiki"
-msgstr "Rechercher dans ce wiki"
 
 #: html/static/index.html:19
 msgid "Search globally"
 msgstr "Rechercher globalement"
 
-#: html/static/templates/search.html.tpl:76
-#: html/static/templates/search.html.tpl:71
-msgid "Next page"
-msgstr "Page suivante"
+#: html/static/index.html:23
+msgid "Search in this wiki"
+msgstr "Rechercher dans ce wiki"
 
-#: html/static/templates/search.html.tpl:63
-msgid "Page"
-msgstr "Page"
+#: html/static/index.html:37 html/static/templates/viewPage.html.tpl:6
+msgid "Loading..."
+msgstr "Chargement..."
 
-#: html/static/templates/search.html.tpl:58
-#: html/static/templates/search.html.tpl:53
-msgid "Previous page"
-msgstr "Page précédente"
+#: html/static/index.html:31
+msgid "JavaScript is off. ZimWiki needs JavaScript support to work."
+msgstr "JavaScript est désactivé. ZimWiki a besoin de JavaScript pour fonctionner."
 
-#: html/static/templates/search.html.tpl:37
-#: html/static/templates/home.html.tpl:27
-msgid "Read"
-msgstr "Lire"
-
-#: html/static/templates/search.html.tpl:19
-msgid "results"
-msgstr "résultats"
-
-#: html/static/templates/search.html.tpl:17
-msgid "No result"
-msgstr "Aucun résultat"
-
-#: html/static/templates/search.html.tpl:12
-msgid "in"
-msgstr "dans"
+#: html/static/templates/search.html.tpl:7
+msgid "Search results for"
+msgstr "Résultats de recherche pour"
 
 #: html/static/templates/search.html.tpl:10
 msgid "global search"
 msgstr "recherche globale"
 
-#: html/static/templates/search.html.tpl:7
-msgid "Search results for"
-msgstr "Résultats de recherche pour"
+#: html/static/templates/search.html.tpl:12
+msgid "in"
+msgstr "dans"
+
+#: html/static/templates/search.html.tpl:17
+msgid "No result"
+msgstr "Aucun résultat"
+
+#: html/static/templates/search.html.tpl:19
+msgid "results"
+msgstr "résultats"
+
+#: html/static/templates/search.html.tpl:38
+#: html/static/templates/home.html.tpl:27
+msgid "Read"
+msgstr "Lire"
+
+#: html/static/templates/search.html.tpl:54
+#: html/static/templates/search.html.tpl:59
+msgid "Previous page"
+msgstr "Page précédente"
+
+#: html/static/templates/search.html.tpl:64
+msgid "Page"
+msgstr "Page"
+
+#: html/static/templates/search.html.tpl:72
+#: html/static/templates/search.html.tpl:77
+msgid "Next page"
+msgstr "Page suivante"
 
 #: html/static/templates/home.html.tpl:8
 msgid "Available Wikis"
