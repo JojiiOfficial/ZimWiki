@@ -9,6 +9,22 @@ body {
 	margin-bottom: 80px;
 }
 
+.spinner-container {
+	position: fixed;
+	visibility: hidden;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	z-index: 9999;
+	opacity: 0;
+}
+
+.spinner-border {
+	width: 3rem;
+	height: 3rem;
+}
+
 .form-control {
 	border: 1px solid #00000020;
 }
@@ -31,12 +47,22 @@ body {
 }
 
 #name, h1, h2, h3, h4, h5, h6 {
-	font-family: 'Linux Libertine','Georgia','Times',serif;
+	font-family: 'Linux Libertine', 'Georgia', 'Times', serif;
 }
 
 h1, h2, h5, h6 {
 	text-align: center;
 	margin-bottom: 0.8rem;
+}
+
+#iframeSpinner {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	opacity: 0;
+	visibility: hidden;
 }
 
 .iframe-container {

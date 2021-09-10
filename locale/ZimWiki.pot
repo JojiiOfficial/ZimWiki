@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-07-08 00:02+0200\n"
+"POT-Creation-Date: 2021-07-15 23:49+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,55 +17,59 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: html/static/index.html:31
-msgid "JavaScript is off. ZimWiki needs JavaScript support to work."
+#: html/static/index.html:19
+msgid "Search globally"
 msgstr ""
 
 #: html/static/index.html:23
 msgid "Search in this wiki"
 msgstr ""
 
-#: html/static/index.html:19
-msgid "Search globally"
+#: html/static/index.html:37 html/static/templates/viewPage.html.tpl:6
+msgid "Loading..."
 msgstr ""
 
-#: html/static/templates/search.html.tpl:76
-#: html/static/templates/search.html.tpl:71
-msgid "Next page"
+#: html/static/index.html:31
+msgid "JavaScript is off. ZimWiki needs JavaScript support to work."
 msgstr ""
 
-#: html/static/templates/search.html.tpl:63
-msgid "Page"
-msgstr ""
-
-#: html/static/templates/search.html.tpl:58
-#: html/static/templates/search.html.tpl:53
-msgid "Previous page"
-msgstr ""
-
-#: html/static/templates/search.html.tpl:37
-#: html/static/templates/home.html.tpl:27
-msgid "Read"
-msgstr ""
-
-#: html/static/templates/search.html.tpl:19
-msgid "results"
-msgstr ""
-
-#: html/static/templates/search.html.tpl:17
-msgid "No result"
-msgstr ""
-
-#: html/static/templates/search.html.tpl:12
-msgid "in"
+#: html/static/templates/search.html.tpl:7
+msgid "Search results for"
 msgstr ""
 
 #: html/static/templates/search.html.tpl:10
 msgid "global search"
 msgstr ""
 
-#: html/static/templates/search.html.tpl:7
-msgid "Search results for"
+#: html/static/templates/search.html.tpl:12
+msgid "in"
+msgstr ""
+
+#: html/static/templates/search.html.tpl:17
+msgid "No result"
+msgstr ""
+
+#: html/static/templates/search.html.tpl:19
+msgid "results"
+msgstr ""
+
+#: html/static/templates/search.html.tpl:38
+#: html/static/templates/home.html.tpl:27
+msgid "Read"
+msgstr ""
+
+#: html/static/templates/search.html.tpl:54
+#: html/static/templates/search.html.tpl:59
+msgid "Previous page"
+msgstr ""
+
+#: html/static/templates/search.html.tpl:64
+msgid "Page"
+msgstr ""
+
+#: html/static/templates/search.html.tpl:72
+#: html/static/templates/search.html.tpl:77
+msgid "Next page"
 msgstr ""
 
 #: html/static/templates/home.html.tpl:8

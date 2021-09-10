@@ -1,5 +1,13 @@
 {{ define "content" }}
 
+<div id="iframeSpinner">
+        <div class="d-flex flex-column min-vh-100 justify-content-center align-items-center">
+            <div class="spinner-border" role="status">
+              <span class="visually-hidden">{{ gettext "Loading..." }}</span>
+            </div>
+        </div>
+    </div>
+
 <div class="iframe-container">
     <iframe type="text/html" src="{{ .Source }}" target="_parent" id="wikiContent" frameBorder="0" onload="fixURLs()">
     </iframe>
@@ -8,10 +16,42 @@
 <script src="/assets/js/jquery.min.js"></script>
 
 <script>
+
+    setTimeout(function(){
+        // Get iframe content
+        var iframeContent = document.getElementById("wikiContent").contentDocument || document.getElementById("wikiContent").contentWindow.document;
+
+        // If the iframe is not yet loaded
+        if (iframeContent.readyState != "complete") {
+            showSpinner();
+        }
+    }, 300);
+
     $( "iframe" ).on('load',function() {
         // Get iframe title
         document.title = document.getElementById("wikiContent").contentDocument.title;
+        hideSpinner();
     });
+
+    function showSpinner() {
+        // Some animations when the spinner should be displayed
+        document.getElementsByClassName("iframe-container")[0].style.transition = "opacity 0.4s";
+        document.getElementsByClassName("iframe-container")[0].style.opacity = "0";
+        document.getElementsByClassName("iframe-container")[0].style.pointerEvents = "none";
+        document.getElementById("iframeSpinner").style.transition = "opacity 0.4s";
+        document.getElementById("iframeSpinner").style.opacity = "1";
+        document.getElementById("iframeSpinner").style.visibility = "visible";
+    }
+    
+    function hideSpinner() {
+        // Some animations when the spinner needs to be hidden
+        document.getElementsByClassName("iframe-container")[0].style.transition = "opacity 0.4s";
+        document.getElementsByClassName("iframe-container")[0].style.opacity = "1";
+        document.getElementsByClassName("iframe-container")[0].style.pointerEvents = "all";
+        document.getElementById("iframeSpinner").style.transition = "opacity 0.4s";
+        document.getElementById("iframeSpinner").style.opacity = "0";
+        document.getElementById("iframeSpinner").style.visibility = "hidden";
+    }
 
     function fixURLs(){
         // Get contents of the iframe
