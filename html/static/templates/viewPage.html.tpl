@@ -25,7 +25,7 @@
         if (iframeContent.readyState != "complete") {
             showSpinner();
         }
-    }, 100);
+    }, 300);
 
     $( "iframe" ).on('load',function() {
         // Get iframe title
