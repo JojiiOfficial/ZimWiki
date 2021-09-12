@@ -5,7 +5,6 @@ go 1.16
 replace github.com/tim-st/go-zim v0.1.2 => github.com/JojiiOfficial/go-zim v0.1.2-1
 
 require (
-	github.com/JojiiOfficial/gaw v1.2.8
 	github.com/agext/levenshtein v1.2.3
 	github.com/chai2010/gettext-go v1.0.2
 	github.com/golang/snappy v0.0.4 // indirect
