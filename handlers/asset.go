@@ -6,7 +6,6 @@ import (
 	"path"
 	"path/filepath"
 
-	"github.com/JojiiOfficial/gaw"
 	"github.com/gorilla/mux"
 )
 
@@ -23,12 +22,6 @@ func Assets(w http.ResponseWriter, r *http.Request, hd HandlerData) error {
 
 	// Get local path
 	path := filepath.Clean(path.Join(AssetsPath, assetType, reqFile))
-
-	// Check if file exists
-	if !gaw.FileExists(path) {
-		http.NotFound(w, r)
-		return nil
-	}
 
 	// Serve Asset
 	return serveRawFile(path, w)

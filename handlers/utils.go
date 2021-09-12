@@ -4,7 +4,6 @@ import (
 	"io"
 	"mime"
 	"net/http"
-	"os"
 	"strings"
 )
 
@@ -22,7 +21,7 @@ func serveRawFile(path string, w http.ResponseWriter) error {
 
 func serveStaticFile(path string, w io.Writer) error {
 	// Try to open file
-	f, err := os.OpenFile(path, os.O_RDONLY, 0600)
+	f, err := WebFS.Open(path)
 	defer f.Close()
 	if err != nil {
 		return err
