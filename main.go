@@ -8,11 +8,16 @@ import (
 	"os/signal"
 	"syscall"
 	"time"
+	"embed"
 
+	"github.com/JojiiOfficial/ZimWiki/handlers"
 	"github.com/JojiiOfficial/ZimWiki/zim"
 	log "github.com/sirupsen/logrus"
 	"github.com/pelletier/go-toml"
 )
+
+//go:embed html/*
+var WebFS embed.FS
 
 type configStruct struct {
 	libPath  string
@@ -21,6 +26,8 @@ type configStruct struct {
 
 func main() {
 	setupLogger()
+
+	handlers.WebFS = WebFS
 
 	// Default configuration of ZimWiki
 	defaultConfig, _ := toml.Load(`
