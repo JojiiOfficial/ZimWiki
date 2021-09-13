@@ -6,8 +6,11 @@ import (
 	"path"
 	"time"
 	"strings"
+	"embed"
 	"github.com/chai2010/gettext-go"
 )
+
+var WebFS embed.FS
 
 var (
 	// TemplateCache is a cache of templates
@@ -111,7 +114,7 @@ func serveTemplate(tmpFile string, w http.ResponseWriter, r *http.Request, btd T
 
 	if !has {
 		// Parse if not in cache
-		tmpl, err = template.New(tmplName).Funcs(funcMap).ParseFiles(BaseTemplate, tmpFile)
+		tmpl, err = template.New(tmplName).Funcs(funcMap).ParseFS(WebFS, BaseTemplate, tmpFile)
 		if err != nil {
 			return err
 		}
