@@ -11,6 +11,7 @@ import (
 )
 
 var WebFS embed.FS
+var LocaleByte []byte
 
 var (
 	// TemplateCache is a cache of templates
@@ -106,7 +107,7 @@ func serveTemplate(tmpFile string, w http.ResponseWriter, r *http.Request, btd T
 	}
 
 	// Get locale
-	gettext.BindLocale(gettext.New("ZimWiki", "locale"))
+	gettext.BindLocale(gettext.New("ZimWiki", "locale", LocaleByte))
 
 	funcMap := template.FuncMap{
 		"gettext": translate,

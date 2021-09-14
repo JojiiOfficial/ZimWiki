@@ -19,6 +19,9 @@ import (
 //go:embed html/*
 var WebFS embed.FS
 
+//go:embed locale.zip
+var LocaleByte []byte
+
 type configStruct struct {
 	libPath  string
 	address  string
@@ -28,6 +31,8 @@ func main() {
 	setupLogger()
 
 	handlers.WebFS = WebFS
+	
+	handlers.LocaleByte = LocaleByte
 
 	// Default configuration of ZimWiki
 	defaultConfig, _ := toml.Load(`
