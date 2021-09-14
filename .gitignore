@@ -1,5 +1,7 @@
 *.zim
 *.zim.gz
+*.mo
+locale.zip
 main
 .vscode
 .idea
