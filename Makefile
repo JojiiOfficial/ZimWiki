@@ -1,5 +1,9 @@
 build:
 	go mod download
+	msgfmt -o locale/de/LC_MESSAGES/ZimWiki.mo locale/de/LC_MESSAGES/ZimWiki.po
+	msgfmt -o locale/fr/LC_MESSAGES/ZimWiki.mo locale/fr/LC_MESSAGES/ZimWiki.po
+	msgfmt -o locale/es/LC_MESSAGES/ZimWiki.mo locale/es/LC_MESSAGES/ZimWiki.po
+	zip -r locale.zip locale
 	go build -ldflags "-X github.com/JojiiOfficial/ZimWiki/handlers.version=`git describe --tags` -X github.com/JojiiOfficial/ZimWiki/handlers.buildTime=`date +%FT%T%z`" -o ZimWiki
 
 default: build
@@ -50,3 +54,5 @@ clean:
 	rm -f ZimWiki.1
 	rm -f ZimWiki
 	rm -f main
+	rm -f locale.zip
+	find . -name "*.mo" -type f -delete
