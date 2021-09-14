@@ -16,4 +16,5 @@ jobs:
           go-version: '1.16.8'
     - name: Build
       run: |
+        sudo apt install gettext
         make build
