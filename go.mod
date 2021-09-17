@@ -2,7 +2,7 @@ module github.com/JojiiOfficial/ZimWiki
 
 go 1.16
 
-replace github.com/tim-st/go-zim v0.1.2 => github.com/JojiiOfficial/go-zim v0.1.2-1
+replace github.com/tim-st/go-zim v0.1.2 => github.com/JojiiOfficial/go-zim v0.1.4
 
 require (
 	github.com/agext/levenshtein v1.2.3

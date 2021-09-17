@@ -1,7 +1,5 @@
-github.com/JojiiOfficial/gaw v1.2.8 h1:crLd2hrRvTlCClZDtwqnr8AoVKs3uQAk8B2AdOfUCsg=
-github.com/JojiiOfficial/gaw v1.2.8/go.mod h1:fPm2wG1z8xSCmfkqq9V5iHdlgLUpkRx73tSO9efhJP0=
-github.com/JojiiOfficial/go-zim v0.1.2-1 h1:eUbgplIMF75jJxPbZcmTKc1tOue8roCcqele7Sx9vpo=
-github.com/JojiiOfficial/go-zim v0.1.2-1/go.mod h1:MDhR/3N7UdpHZCT18hcN4kqD1hdSttPKFehkyUYjPWc=
+github.com/JojiiOfficial/go-zim v0.1.4 h1:1Fq4QfPvSqvt4asplwJ5uyvtzo9kn0YHmWK8gsszX6E=
+github.com/JojiiOfficial/go-zim v0.1.4/go.mod h1:MDhR/3N7UdpHZCT18hcN4kqD1hdSttPKFehkyUYjPWc=
 github.com/agext/levenshtein v1.2.3 h1:YB2fHEn0UJagG8T1rrWknE3ZQzWM06O8AMAatNn7lmo=
 github.com/agext/levenshtein v1.2.3/go.mod h1:JEDfjyjHDjOF/1e4FlBE/PkbqA9OfWu2ki2W0IB5558=
 github.com/boltdb/bolt v1.3.1/go.mod h1:clJnj/oiGkjum5o1McbSZDSLxVThjynRyGBgiAx27Ps=
@@ -9,7 +7,6 @@ github.com/chai2010/gettext-go v1.0.2 h1:1Lwwip6Q2QGsAdl/ZKPCwTe9fe0CjlUbqj5bFNS
 github.com/chai2010/gettext-go v1.0.2/go.mod h1:y+wnP2cHYaVj19NZhYKAwEMH2CI1gNHeQQ+5AjwawxA=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
-github.com/golang/snappy v0.0.3 h1:fHPg5GQYlCeLIPB9BZqMVR5nR9A+IM5zcgeTdjMYmLA=
 github.com/golang/snappy v0.0.3/go.mod h1:/XxbfmMg8lxefKM7IXC3fBNl/7bRcc72aCRzEWrmP2Q=
 github.com/golang/snappy v0.0.4 h1:yAGX7huGHXlcLOEtBnF4w7FQwA26wojNCwOYAEhLjQM=
 github.com/golang/snappy v0.0.4/go.mod h1:/XxbfmMg8lxefKM7IXC3fBNl/7bRcc72aCRzEWrmP2Q=
