@@ -16,6 +16,8 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+var EnableSearchCache bool
+
 // Cache initialization with a default expiration time of 2 minutes and purge expired items every 2 minutes
 var searchCache = cache.New(2*time.Minute, 2*time.Minute)
 
@@ -28,7 +30,7 @@ func searchSingle(query string, nbResultsPerPage int, resultsUntil int, wiki *zi
 	cachedData, found := searchCache.Get(query + wiki.Path)
 
 	// If not cached
-	if !found {
+	if !found || !EnableSearchCache {
 		// Search entries
 		entries = wiki.SearchForEntry(query)
 		// Sort them by similarity
@@ -80,7 +82,7 @@ func searchGlobal(query string, nbResultsPerPage int, resultsUntil int, handler 
 	// Check if the search is cached
 	cachedData, found := searchCache.Get(query)
 
-	if !found {
+	if !found || !EnableSearchCache {
 		mx := sync.Mutex{}
 		wg := sync.WaitGroup{}
 		files := handler.GetFiles()

@@ -2,18 +2,19 @@ package main
 
 import (
 	"context"
+	"embed"
 	"fmt"
 	"net/http"
 	"os"
 	"os/signal"
+	"strconv"
 	"syscall"
 	"time"
-	"embed"
 
 	"github.com/JojiiOfficial/ZimWiki/handlers"
 	"github.com/JojiiOfficial/ZimWiki/zim"
-	log "github.com/sirupsen/logrus"
 	"github.com/pelletier/go-toml"
+	log "github.com/sirupsen/logrus"
 )
 
 //go:embed html/*
@@ -23,41 +24,47 @@ var WebFS embed.FS
 var LocaleByte []byte
 
 type configStruct struct {
-	libPath  string
-	address  string
+	libPath           string
+	address           string
+	EnableSearchCache bool
 }
 
 func main() {
 	setupLogger()
 
 	handlers.WebFS = WebFS
-	
+
 	handlers.LocaleByte = LocaleByte
 
 	// Default configuration of ZimWiki
 	defaultConfig, _ := toml.Load(`
 	[Config]
 	LibraryPath = "./library"
-	Address = ":8080"`)
+	Address = ":8080"
+	EnableSearchCache = "true"`)
 
 	// Load default configuration
 	libPath := defaultConfig.Get("Config.LibraryPath").(string)
 	address := defaultConfig.Get("Config.Address").(string)
+	EnableSearchCache, _ := strconv.ParseBool(defaultConfig.Get("Config.EnableSearchCache").(string))
 
 	// Load configuration file
 	configData, err := toml.LoadFile("config.toml")
-	
+
 	// If the configuration file has been successfully loaded
-	if (err == nil) {
+	if err == nil {
 		// Load the configuration from the configuration file
 		configDataTree := configData.Get("Config").(*toml.Tree)
 		libPath = configDataTree.Get("LibraryPath").(string)
 		address = configDataTree.Get("Address").(string)
+		EnableSearchCache, _ = strconv.ParseBool(configDataTree.Get("Config.EnableSearchCache").(string))
 	} else {
 		log.Error("Config.toml not found, default configuration will be used.")
 	}
 
-	config := configStruct{libPath: libPath, address: address}		
+	config := configStruct{libPath: libPath, address: address, EnableSearchCache: EnableSearchCache}
+
+	handlers.EnableSearchCache = EnableSearchCache
 
 	if len(os.Args) > 1 {
 		config.libPath = os.Args[1]
