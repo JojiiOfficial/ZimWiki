@@ -71,31 +71,42 @@ func searchSingle(query string, nbResultsPerPage int, resultsUntil int, wiki *zi
 // Search in all available wikis
 func searchGlobal(query string, nbResultsPerPage int, resultsUntil int, handler *zim.Handler) ([]zim.SRes, int, int) {
 	var results []zim.SRes
-	mx := sync.Mutex{}
-	wg := sync.WaitGroup{}
-	files := handler.GetFiles()
 
-	wg.Add(len(files))
+	// Check if the search is cached
+	cachedData, found := searchCache.Get(query)
 
-	// Concurrent global search
-	for i := range files {
-		go func(index int) {
-			// Search
-			r := files[index].SearchForEntry(query)
+	if !found {
+		mx := sync.Mutex{}
+		wg := sync.WaitGroup{}
+		files := handler.GetFiles()
 
-			// Append results
-			mx.Lock()
-			results = append(results, r...)
-			mx.Unlock()
+		wg.Add(len(files))
 
-			wg.Done()
-		}(i)
+		// Concurrent global search
+		for i := range files {
+			go func(index int) {
+				// Search
+				r := files[index].SearchForEntry(query)
+
+				// Append results
+				mx.Lock()
+				results = append(results, r...)
+				mx.Unlock()
+
+				wg.Done()
+			}(i)
+		}
+
+		wg.Wait()
+
+		// Sort by similarity
+		sort.Sort(sort.Reverse(zim.ByPercentage(results)))
+		// Cache the search with the default expiration time
+		searchCache.Set(query, results, cache.DefaultExpiration)
+	} else {
+		// Otherwise the variable results retrieves the content of the variable cachedData
+		results = cachedData.([]zim.SRes)
 	}
-
-	wg.Wait()
-
-	// Sort by similarity
-	sort.Sort(sort.Reverse(zim.ByPercentage(results)))
 
 	resultsStart := resultsUntil - nbResultsPerPage
 
