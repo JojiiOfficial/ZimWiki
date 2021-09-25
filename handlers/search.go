@@ -19,9 +19,11 @@ import (
 // Cache initialization with a default expiration time of 2 minutes and purge expired items every 2 minutes
 var searchCache = cache.New(2*time.Minute, 2*time.Minute)
 
-func searchSingle(query string, nbResultsPerPage int, resultsUntil int, wiki *zim.File) ([]zim.SRes, int, int) {
+func searchSingle(query string, nbResultsPerPage int, resultsUntil int, wiki *zim.File) ([]zim.SRes, int, int, bool) {
 
 	var entries []zim.SRes
+
+	var isCached bool
 
 	// Check if the search is cached
 	cachedData, found := searchCache.Get(query + wiki.Path)
@@ -34,9 +36,11 @@ func searchSingle(query string, nbResultsPerPage int, resultsUntil int, wiki *zi
 		sort.Sort(sort.Reverse(zim.ByPercentage(entries)))
 		// Cache the search with the default expiration time
 		searchCache.Set(query+wiki.Path, entries, cache.DefaultExpiration)
+		isCached = false
 	} else {
 		// Otherwise the variable entries retrieves the content of the variable cachedData
 		entries = cachedData.([]zim.SRes)
+		isCached = true
 	}
 
 	// Calculate the first result displayed in the page
@@ -65,12 +69,14 @@ func searchSingle(query string, nbResultsPerPage int, resultsUntil int, wiki *zi
 	// Calculate the total number of pages
 	nbPages := int(math.Ceil(float64(len(entries)) / float64(nbResultsPerPage)))
 
-	return entries[resultsStart:resultsUntil], len(entries), nbPages
+	return entries[resultsStart:resultsUntil], len(entries), nbPages, isCached
 }
 
 // Search in all available wikis
-func searchGlobal(query string, nbResultsPerPage int, resultsUntil int, handler *zim.Handler) ([]zim.SRes, int, int) {
+func searchGlobal(query string, nbResultsPerPage int, resultsUntil int, handler *zim.Handler) ([]zim.SRes, int, int, bool) {
 	var results []zim.SRes
+
+	var isCached bool
 
 	// Check if the search is cached
 	cachedData, found := searchCache.Get(query)
@@ -103,9 +109,11 @@ func searchGlobal(query string, nbResultsPerPage int, resultsUntil int, handler 
 		sort.Sort(sort.Reverse(zim.ByPercentage(results)))
 		// Cache the search with the default expiration time
 		searchCache.Set(query, results, cache.DefaultExpiration)
+		isCached = false
 	} else {
 		// Otherwise the variable results retrieves the content of the variable cachedData
 		results = cachedData.([]zim.SRes)
+		isCached = true
 	}
 
 	resultsStart := resultsUntil - nbResultsPerPage
@@ -133,7 +141,7 @@ func searchGlobal(query string, nbResultsPerPage int, resultsUntil int, handler 
 	// Calculate the total number of pages
 	nbPages := int(math.Ceil(float64(len(results)) / float64(nbResultsPerPage)))
 
-	return results[resultsStart:resultsUntil], len(results), nbPages
+	return results[resultsStart:resultsUntil], len(results), nbPages, isCached
 }
 
 // Search handles serach requests
@@ -173,12 +181,13 @@ func Search(w http.ResponseWriter, r *http.Request, hd HandlerData) error {
 	var source string
 	var nbResults int
 	var nbPages int
+	var isCached bool
 
 	start := time.Now()
 	if wiki == "-" {
 		source = "global search"
 
-		res, nbResults, nbPages = searchGlobal(query, nbResultsPerPage, resultsUntil, hd.ZimService)
+		res, nbResults, nbPages, isCached = searchGlobal(query, nbResultsPerPage, resultsUntil, hd.ZimService)
 	} else {
 		// Wiki search
 		z := hd.ZimService.FindWikiFile(wiki)
@@ -189,7 +198,7 @@ func Search(w http.ResponseWriter, r *http.Request, hd HandlerData) error {
 		source = z.File.Title()
 
 		// Search for query in WIKI
-		res, nbResults, nbPages = searchSingle(query, nbResultsPerPage, resultsUntil, z)
+		res, nbResults, nbPages, isCached = searchSingle(query, nbResultsPerPage, resultsUntil, z)
 	}
 
 	var previousPage int
@@ -231,6 +240,11 @@ func Search(w http.ResponseWriter, r *http.Request, hd HandlerData) error {
 	timeTook := time.Since(start)
 
 	var resultText string
+	var cachedText string
+
+	if isCached == true {
+		cachedText = " from cache"
+	}
 
 	if nbResults == 0 {
 		resultText = "No result"
@@ -240,7 +254,7 @@ func Search(w http.ResponseWriter, r *http.Request, hd HandlerData) error {
 		resultText = strconv.Itoa(nbResults) + " results"
 	}
 
-	log.Info(resultText, " in ", timeTook)
+	log.Info(resultText, cachedText, " in ", timeTook)
 
 	// Redirect to wiki page if only
 	// one search result was found
