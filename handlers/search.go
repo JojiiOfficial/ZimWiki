@@ -20,7 +20,6 @@ import (
 var searchCache = cache.New(2*time.Minute, 2*time.Minute)
 
 func searchSingle(query string, nbResultsPerPage int, resultsUntil int, wiki *zim.File) ([]zim.SRes, int, int, bool) {
-
 	var entries []zim.SRes
 
 	var isCached bool
