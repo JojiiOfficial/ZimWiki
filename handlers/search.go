@@ -2,24 +2,42 @@ package handlers
 
 import (
 	"fmt"
+	"math"
 	"net/http"
 	"sort"
+	"strconv"
 	"sync"
 	"time"
-	"strconv"
-	"math"
 
 	"github.com/JojiiOfficial/ZimWiki/zim"
 	"github.com/gorilla/mux"
+	"github.com/patrickmn/go-cache"
 
 	log "github.com/sirupsen/logrus"
 )
 
+// Cache initialization with a default expiration time of 2 minutes and purge expired items every 2 minutes
+var searchCache = cache.New(2*time.Minute, 2*time.Minute)
+
 func searchSingle(query string, nbResultsPerPage int, resultsUntil int, wiki *zim.File) ([]zim.SRes, int, int) {
-	// Search entries
-	entries := wiki.SearchForEntry(query)
-	// Sort them by similarity
-	sort.Sort(sort.Reverse(zim.ByPercentage(entries)))
+
+	var entries []zim.SRes
+
+	// Check if the search is cached
+	cachedData, found := searchCache.Get(query + wiki.Path)
+
+	// If not cached
+	if !found {
+		// Search entries
+		entries = wiki.SearchForEntry(query)
+		// Sort them by similarity
+		sort.Sort(sort.Reverse(zim.ByPercentage(entries)))
+		// Cache the search with the default expiration time
+		searchCache.Set(query+wiki.Path, entries, cache.DefaultExpiration)
+	} else {
+		// Otherwise the variable entries retrieves the content of the variable cachedData
+		entries = cachedData.([]zim.SRes)
+	}
 
 	// Calculate the first result displayed in the page
 	resultsStart := resultsUntil - nbResultsPerPage
@@ -170,7 +188,7 @@ func Search(w http.ResponseWriter, r *http.Request, hd HandlerData) error {
 		previousPage = actualPageNb - 1
 	}
 
-	if  nbResults - (nbResultsPerPage * (actualPageNb)) > 0 {
+	if nbResults-(nbResultsPerPage*(actualPageNb)) > 0 {
 		nextPage = actualPageNb + 1
 	}
 
@@ -203,9 +221,9 @@ func Search(w http.ResponseWriter, r *http.Request, hd HandlerData) error {
 
 	var resultText string
 
-	if (nbResults == 0) {
+	if nbResults == 0 {
 		resultText = "No result"
-	} else if (nbResults == 1) {
+	} else if nbResults == 1 {
 		resultText = "1 result"
 	} else {
 		resultText = strconv.Itoa(nbResults) + " results"
