@@ -42,6 +42,8 @@ config.toml:
 [Config]
 LibraryPath = "./library"
 Address = ":8080"
+EnableSearchCache = "true"
+SearchCacheDuration = "2"
 ```
 
 # Usage
@@ -53,6 +55,7 @@ Run the binary and go to `https://localhost:Port`
 - [x] Read Wikis
 - [x] Search (inside a wiki or globally)
 - [x] Create wiki index files for faster search
+- [x] Caching of search results for smoother navigation
 - [x] Send content gzipped
 - [x] Use symlinks as .zim link
 - [x] Replace absolute links with relative ones
