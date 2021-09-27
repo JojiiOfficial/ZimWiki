@@ -24,9 +24,10 @@ var WebFS embed.FS
 var LocaleByte []byte
 
 type configStruct struct {
-	libPath           string
-	address           string
-	EnableSearchCache bool
+	libPath             string
+	address             string
+	EnableSearchCache   bool
+	SearchCacheDuration int
 }
 
 func main() {
@@ -41,12 +42,14 @@ func main() {
 	[Config]
 	LibraryPath = "./library"
 	Address = ":8080"
-	EnableSearchCache = "true"`)
+	EnableSearchCache = "true"
+	SearchCacheDuration = "2"`)
 
 	// Load default configuration
 	libPath := defaultConfig.Get("Config.LibraryPath").(string)
 	address := defaultConfig.Get("Config.Address").(string)
 	EnableSearchCache, _ := strconv.ParseBool(defaultConfig.Get("Config.EnableSearchCache").(string))
+	SearchCacheDuration, _ := strconv.Atoi(defaultConfig.Get("Config.SearchCacheDuration").(string))
 
 	// Load configuration file
 	configData, err := toml.LoadFile("config.toml")
@@ -58,13 +61,15 @@ func main() {
 		libPath = configDataTree.Get("LibraryPath").(string)
 		address = configDataTree.Get("Address").(string)
 		EnableSearchCache, _ = strconv.ParseBool(configDataTree.Get("Config.EnableSearchCache").(string))
+		SearchCacheDuration, _ = strconv.Atoi((configDataTree.Get("Config.SearchCacheDuration")).(string))
 	} else {
 		log.Error("Config.toml not found, default configuration will be used.")
 	}
 
-	config := configStruct{libPath: libPath, address: address, EnableSearchCache: EnableSearchCache}
+	config := configStruct{libPath: libPath, address: address, EnableSearchCache: EnableSearchCache, SearchCacheDuration: SearchCacheDuration}
 
 	handlers.EnableSearchCache = EnableSearchCache
+	handlers.SearchCacheDuration = SearchCacheDuration
 
 	if len(os.Args) > 1 {
 		config.libPath = os.Args[1]

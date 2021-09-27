@@ -17,9 +17,10 @@ import (
 )
 
 var EnableSearchCache bool
+var SearchCacheDuration int
 
 // Cache initialization with a default expiration time of 2 minutes and purge expired items every 2 minutes
-var searchCache = cache.New(2*time.Minute, 2*time.Minute)
+var searchCache = cache.New(time.Duration(SearchCacheDuration)*time.Minute, time.Duration(SearchCacheDuration)*time.Minute)
 
 func searchSingle(query string, nbResultsPerPage int, resultsUntil int, wiki *zim.File) ([]zim.SRes, int, int, bool) {
 	var entries []zim.SRes
