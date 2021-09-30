@@ -17,11 +17,13 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-//go:embed html/*
-var WebFS embed.FS
+var (
+	//go:embed html/*
+	WebFS embed.FS
 
-//go:embed locale.zip
-var LocaleByte []byte
+	//go:embed locale.zip
+	LocaleByte []byte
+)
 
 type configStruct struct {
 	libPath             string

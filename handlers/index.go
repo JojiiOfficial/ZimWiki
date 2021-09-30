@@ -7,8 +7,8 @@ import (
 )
 
 var (
-	version string
-    buildTime string
+	version   string
+	buildTime string
 )
 
 // Index handle index route

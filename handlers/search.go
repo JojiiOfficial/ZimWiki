@@ -16,8 +16,10 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-var EnableSearchCache bool
-var SearchCacheDuration int
+var (
+	EnableSearchCache   bool
+	SearchCacheDuration int
+)
 
 // Cache initialization with a default expiration time of 2 minutes and purge expired items every 2 minutes
 var searchCache = cache.New(time.Duration(SearchCacheDuration)*time.Minute, time.Duration(SearchCacheDuration)*time.Minute)
