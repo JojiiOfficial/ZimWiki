@@ -11,7 +11,7 @@ import (
 
 	"github.com/JojiiOfficial/ZimWiki/zim"
 	"github.com/gorilla/mux"
-	"github.com/patrickmn/go-cache"
+	"zgo.at/zcache"
 
 	log "github.com/sirupsen/logrus"
 )
@@ -20,7 +20,7 @@ var (
 	EnableSearchCache   bool
 	SearchCacheDuration int
 	// Cache initialization with a default expiration time of X minutes and purge expired items every X minutes
-	searchCache = cache.New(time.Duration(SearchCacheDuration)*time.Minute, time.Duration(SearchCacheDuration)*time.Minute)
+	searchCache = zcache.New(time.Duration(SearchCacheDuration)*time.Minute, time.Duration(SearchCacheDuration)*time.Minute)
 )
 
 func searchSingle(query string, nbResultsPerPage int, resultsUntil int, wiki *zim.File) ([]zim.SRes, int, int, bool) {
@@ -38,11 +38,12 @@ func searchSingle(query string, nbResultsPerPage int, resultsUntil int, wiki *zi
 		// Sort them by similarity
 		sort.Sort(sort.Reverse(zim.ByPercentage(entries)))
 		// Cache the search with the default expiration time
-		searchCache.Set(query+wiki.Path, entries, cache.DefaultExpiration)
+		searchCache.Set(query+wiki.Path, entries, zcache.DefaultExpiration)
 		isCached = false
 	} else {
 		// Otherwise the variable entries retrieves the content of the variable cachedData
 		entries = cachedData.([]zim.SRes)
+		searchCache.Touch(query+wiki.Path, zcache.DefaultExpiration)
 		isCached = true
 	}
 
@@ -111,7 +112,7 @@ func searchGlobal(query string, nbResultsPerPage int, resultsUntil int, handler 
 		// Sort by similarity
 		sort.Sort(sort.Reverse(zim.ByPercentage(results)))
 		// Cache the search with the default expiration time
-		searchCache.Set(query, results, cache.DefaultExpiration)
+		searchCache.Set(query, results, zcache.DefaultExpiration)
 		isCached = false
 	} else {
 		// Otherwise the variable results retrieves the content of the variable cachedData
