@@ -90,7 +90,7 @@ func serveTemplate(tmpFile string, w http.ResponseWriter, r *http.Request, btd T
 	var err error
 	tmplName := path.Base(tmpFile)
 
-	w.Header().Set("Content-Type", "text/html utf-8")
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 
 	// Find in cache
 	tmpl, has := TemplateCache[tmplName]
