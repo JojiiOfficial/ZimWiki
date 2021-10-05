@@ -31,14 +31,16 @@ func searchSingle(query string, nbResultsPerPage int, resultsUntil int, wiki *zi
 	// Check if the search is cached
 	cachedData, found := searchCache.Get(query + wiki.Path)
 
-	// If not cached
+	// If not cached or with a disabled cache
 	if !found || !EnableSearchCache {
 		// Search entries
 		entries = wiki.SearchForEntry(query)
 		// Sort them by similarity
 		sort.Sort(sort.Reverse(zim.ByPercentage(entries)))
-		// Cache the search with the default expiration time
-		searchCache.Set(query+wiki.Path, entries, zcache.DefaultExpiration)
+		if EnableSearchCache {
+			// Cache the search with the default expiration time
+			searchCache.Set(query+wiki.Path, entries, zcache.DefaultExpiration)
+		}
 		isCached = false
 	} else {
 		// Otherwise the variable entries retrieves the content of the variable cachedData
@@ -85,6 +87,7 @@ func searchGlobal(query string, nbResultsPerPage int, resultsUntil int, handler 
 	// Check if the search is cached
 	cachedData, found := searchCache.Get(query)
 
+	// If not cached or with a disabled cache
 	if !found || !EnableSearchCache {
 		mx := sync.Mutex{}
 		wg := sync.WaitGroup{}
@@ -111,8 +114,10 @@ func searchGlobal(query string, nbResultsPerPage int, resultsUntil int, handler 
 
 		// Sort by similarity
 		sort.Sort(sort.Reverse(zim.ByPercentage(results)))
-		// Cache the search with the default expiration time
-		searchCache.Set(query, results, zcache.DefaultExpiration)
+		if EnableSearchCache {
+			// Cache the search with the default expiration time
+			searchCache.Set(query, results, zcache.DefaultExpiration)
+		}
 		isCached = false
 	} else {
 		// Otherwise the variable results retrieves the content of the variable cachedData
@@ -148,7 +153,7 @@ func searchGlobal(query string, nbResultsPerPage int, resultsUntil int, handler 
 	return results[resultsStart:resultsUntil], len(results), nbPages, isCached
 }
 
-// Search handles serach requests
+// Search handles search requests
 func Search(w http.ResponseWriter, r *http.Request, hd HandlerData) error {
 	vars := mux.Vars(r)
 	wiki, ok := vars["wiki"]
