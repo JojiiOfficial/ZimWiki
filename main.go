@@ -2,62 +2,76 @@ package main
 
 import (
 	"context"
+	"embed"
 	"fmt"
 	"net/http"
 	"os"
 	"os/signal"
+	"strconv"
 	"syscall"
 	"time"
-	"embed"
 
 	"github.com/JojiiOfficial/ZimWiki/handlers"
 	"github.com/JojiiOfficial/ZimWiki/zim"
-	log "github.com/sirupsen/logrus"
 	"github.com/pelletier/go-toml"
+	log "github.com/sirupsen/logrus"
 )
 
-//go:embed html/*
-var WebFS embed.FS
+var (
+	//go:embed html/*
+	WebFS embed.FS
 
-//go:embed locale.zip
-var LocaleByte []byte
+	//go:embed locale.zip
+	LocaleByte []byte
+)
 
 type configStruct struct {
-	libPath  string
-	address  string
+	libPath             string
+	address             string
+	EnableSearchCache   bool
+	SearchCacheDuration int
 }
 
 func main() {
 	setupLogger()
 
 	handlers.WebFS = WebFS
-	
+
 	handlers.LocaleByte = LocaleByte
 
 	// Default configuration of ZimWiki
 	defaultConfig, _ := toml.Load(`
 	[Config]
 	LibraryPath = "./library"
-	Address = ":8080"`)
+	Address = ":8080"
+	EnableSearchCache = "true"
+	SearchCacheDuration = "2"`)
 
 	// Load default configuration
 	libPath := defaultConfig.Get("Config.LibraryPath").(string)
 	address := defaultConfig.Get("Config.Address").(string)
+	EnableSearchCache, _ := strconv.ParseBool(defaultConfig.Get("Config.EnableSearchCache").(string))
+	SearchCacheDuration, _ := strconv.Atoi(defaultConfig.Get("Config.SearchCacheDuration").(string))
 
 	// Load configuration file
 	configData, err := toml.LoadFile("config.toml")
-	
+
 	// If the configuration file has been successfully loaded
-	if (err == nil) {
+	if err == nil {
 		// Load the configuration from the configuration file
 		configDataTree := configData.Get("Config").(*toml.Tree)
 		libPath = configDataTree.Get("LibraryPath").(string)
 		address = configDataTree.Get("Address").(string)
+		EnableSearchCache, _ = strconv.ParseBool(configDataTree.Get("Config.EnableSearchCache").(string))
+		SearchCacheDuration, _ = strconv.Atoi((configDataTree.Get("Config.SearchCacheDuration")).(string))
 	} else {
 		log.Error("Config.toml not found, default configuration will be used.")
 	}
 
-	config := configStruct{libPath: libPath, address: address}		
+	config := configStruct{libPath: libPath, address: address, EnableSearchCache: EnableSearchCache, SearchCacheDuration: SearchCacheDuration}
+
+	handlers.EnableSearchCache = EnableSearchCache
+	handlers.SearchCacheDuration = SearchCacheDuration
 
 	if len(os.Args) > 1 {
 		config.libPath = os.Args[1]

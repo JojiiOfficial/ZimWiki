@@ -51,6 +51,7 @@ endif
 
 clean:
 	go clean
+	go mod tidy
 	rm -f ZimWiki.1
 	rm -f ZimWiki
 	rm -f main

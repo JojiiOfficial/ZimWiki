@@ -1,21 +1,21 @@
 package handlers
 
 import (
+	"embed"
 	"html/template"
 	"net/http"
 	"path"
-	"time"
 	"strings"
-	"embed"
+	"time"
+
 	"github.com/chai2010/gettext-go"
 )
-
-var WebFS embed.FS
-var LocaleByte []byte
 
 var (
 	// TemplateCache is a cache of templates
 	TemplateCache = make(map[string]*template.Template)
+	WebFS         embed.FS
+	LocaleByte    []byte
 )
 
 // 						      //
@@ -24,10 +24,10 @@ var (
 
 // TemplateData data for the base template
 type TemplateData struct {
-	Favtype      string
-	FavIcon      string
-	Wiki         string
-	Namespace    string
+	Favtype   string
+	FavIcon   string
+	Wiki      string
+	Namespace string
 
 	HomeTemplateData
 	WikiViewTemplateData
@@ -46,9 +46,9 @@ type HomeCards struct {
 // HomeTemplateData contain data
 // for the home template
 type HomeTemplateData struct {
-	Cards       []HomeCards
-	Version     string
-	BuildTime   string
+	Cards     []HomeCards
+	Version   string
+	BuildTime string
 }
 
 // WikiViewTemplateData data for wiki view page
