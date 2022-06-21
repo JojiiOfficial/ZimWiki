@@ -62,8 +62,8 @@ func main() {
 		configDataTree := configData.Get("Config").(*toml.Tree)
 		libPath = configDataTree.Get("LibraryPath").(string)
 		address = configDataTree.Get("Address").(string)
-		EnableSearchCache, _ = strconv.ParseBool(configDataTree.Get("Config.EnableSearchCache").(string))
-		SearchCacheDuration, _ = strconv.Atoi((configDataTree.Get("Config.SearchCacheDuration")).(string))
+		EnableSearchCache, _ = strconv.ParseBool(configDataTree.Get("EnableSearchCache").(string))
+		SearchCacheDuration, _ = strconv.Atoi((configDataTree.Get("SearchCacheDuration")).(string))
 	} else {
 		log.Error("Config.toml not found, default configuration will be used.")
 	}
